@@ -6,246 +6,394 @@
     <title>Plan Zajęć - Psychologia Zdrowia</title>
     <style>
         :root {
-            --bg-body: #f0f2f5;
-            --bg-card: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --primary: #2563eb;
-            --border: #e5e7eb;
+            --color-bg-primary: #f8fafc;
+            --color-bg-secondary: #ffffff;
+            --color-text-primary: #1e293b;
+            --color-text-secondary: #64748b;
+            --color-primary: #2563eb;
+            --color-border: #e2e8f0;
+            --color-holiday: #fee2e2; /* Jasnoczerwony dla wolnego */
+            --color-holiday-text: #991b1b;
         }
-        body { font-family: sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 20px; line-height: 1.5; }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { text-align: center; color: var(--primary); }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --color-bg-primary: #0f172a;
+                --color-bg-secondary: #1e293b;
+                --color-text-primary: #f1f5f9;
+                --color-text-secondary: #cbd5e1;
+                --color-border: #334155;
+                --color-holiday: #450a0a;
+                --color-holiday-text: #fca5a5;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: var(--color-bg-primary); color: var(--color-text-primary); padding: 20px; line-height: 1.5; }
+        .container { max-width: 1000px; margin: 0 auto; }
         
-        .search-box { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid var(--border); font-size: 16px; box-sizing: border-box; }
-        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 0 0 10px 10px; max-height: 300px; overflow-y: auto; display: none; z-index: 10; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        header { background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: var(--color-primary); margin-bottom: 5px; }
+
+        .search-section { background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; margin-bottom: 20px; position: relative; }
+        input { width: 100%; padding: 12px; border: 2px solid var(--color-border); border-radius: 8px; font-size: 16px; background: var(--color-bg-primary); color: var(--color-text-primary); }
+        
+        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--color-bg-secondary); border: 1px solid var(--color-border); z-index: 100; max-height: 300px; overflow-y: auto; display: none; }
         .suggestions.active { display: block; }
-        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; }
-        .suggestion-item:hover { background-color: #f3f4f6; }
+        .suggestion-item { padding: 12px; border-bottom: 1px solid var(--color-border); cursor: pointer; }
+        .suggestion-item:hover { background: var(--color-border); }
 
-        .student-badge { background: #dbeafe; color: #1e40af; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; text-align: center; border: 1px solid #bfdbfe; }
+        .view-controls { display: flex; gap: 10px; margin-bottom: 20px; display: none; }
+        .view-btn { flex: 1; padding: 10px; border: 1px solid var(--color-border); background: var(--color-bg-secondary); color: var(--color-text-primary); border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .view-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
 
-        .schedule-day { background: var(--bg-card); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .day-header { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 10px; color: var(--primary); }
-        
-        .class-item { padding: 12px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #ccc; background: #f9fafb; }
-        .class-time { font-weight: bold; color: var(--text-main); }
-        .class-name { font-size: 1.1em; margin: 4px 0; font-weight: 600; }
-        .class-details { font-size: 0.9em; color: var(--text-muted); }
-        
+        .schedule-container { display: none; background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; }
+        .schedule-container.active { display: block; }
+
+        /* Lista zajęć */
+        .class-item { padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #ccc; background: var(--color-bg-primary); }
+        .class-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; }
+        .class-details { font-size: 0.9em; color: var(--color-text-secondary); }
+
+        /* Kalendarz */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day { background: var(--color-bg-primary); border: 1px solid var(--color-border); min-height: 80px; padding: 5px; border-radius: 6px; position: relative; font-size: 0.8em; }
+        .calendar-day.today { border-color: var(--color-primary); border-width: 2px; }
+        .calendar-day.holiday { background: var(--color-holiday); color: var(--color-holiday-text); border-color: transparent; }
+        .calendar-header { text-align: center; font-weight: bold; padding: 5px; }
+        .dot-container { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 5px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .holiday-label { font-size: 0.8em; font-weight: bold; margin-top: 2px; display: block; line-height: 1.1; }
+
         /* Kolory przedmiotów */
-        .sub-neuro { border-left-color: #8b5cf6; background: #f5f3ff; } /* Fiolet */
-        .sub-socjo { border-left-color: #ef4444; background: #fef2f2; } /* Czerwony */
-        .sub-psych { border-left-color: #10b981; background: #ecfdf5; } /* Zielony */
-        .sub-wf { border-left-color: #f59e0b; background: #fffbeb; } /* Żółty */
-        .sub-jezyk { border-left-color: #3b82f6; background: #eff6ff; } /* Niebieski */
-        .sub-bio { border-left-color: #ec4899; background: #fdf2f8; } /* Różowy */
+        .s-pedagogika { border-color: #f59e0b; background-color: #f59e0b; }
+        .s-pomoc { border-color: #ef4444; background-color: #ef4444; }
+        .s-socjo { border-color: #8b5cf6; background-color: #8b5cf6; }
+        .s-neuro { border-color: #10b981; background-color: #10b981; }
+        .s-psych { border-color: #ec4899; background-color: #ec4899; }
+        .s-wf { border-color: #3b82f6; background-color: #3b82f6; }
+        .s-jezyk { border-color: #06b6d4; background-color: #06b6d4; }
+        .s-bio { border-color: #eab308; background-color: #eab308; }
+        .s-kreatywne { border-color: #6366f1; background-color: #6366f1; }
+        .s-migowy { border-color: #14b8a6; background-color: #14b8a6; }
+        .s-kognitywistyka { border-color: #f97316; background-color: #f97316; }
+        .s-emisja { border-color: #d946ef; background-color: #d946ef; }
+
+        .dot.s-pedagogika { background: #f59e0b; }
+        .dot.s-pomoc { background: #ef4444; }
+        .dot.s-socjo { background: #8b5cf6; }
+        .dot.s-neuro { background: #10b981; }
+        .dot.s-psych { background: #ec4899; }
+        .dot.s-wf { background: #3b82f6; }
+        .dot.s-jezyk { background: #06b6d4; }
+        .dot.s-bio { background: #eab308; }
+        .dot.s-kreatywne { background: #6366f1; }
+        .dot.s-migowy { background: #14b8a6; }
+        .dot.s-kognitywistyka { background: #f97316; }
+        .dot.s-emisja { background: #d946ef; }
+
+        .class-item.s-pedagogika { background: rgba(245, 158, 11, 0.1); }
+        .class-item.s-pomoc { background: rgba(239, 68, 68, 0.1); }
+        .class-item.s-socjo { background: rgba(139, 92, 246, 0.1); }
+        .class-item.s-neuro { background: rgba(16, 185, 129, 0.1); }
+        .class-item.s-psych { background: rgba(236, 72, 153, 0.1); }
+        .class-item.s-wf { background: rgba(59, 130, 246, 0.1); }
+        .class-item.s-jezyk { background: rgba(6, 182, 212, 0.1); }
+        .class-item.s-bio { background: rgba(234, 179, 8, 0.1); }
+        .class-item.s-kreatywne { background: rgba(99, 102, 241, 0.1); }
+        .class-item.s-migowy { background: rgba(20, 184, 166, 0.1); }
+        .class-item.s-kognitywistyka { background: rgba(249, 115, 22, 0.1); }
+        .class-item.s-emisja { background: rgba(217, 70, 239, 0.1); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🧠 Psychologia Zdrowia - I rok JM</h1>
-    
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Wpisz nazwisko studenta...">
+    <header>
+        <h1>📅 Plan Zajęć - Psychologia Zdrowia</h1>
+        <p>Semestr letni 2026</p>
+    </header>
+
+    <div class="search-section">
+        <input type="text" id="searchInput" placeholder="🔍 Wpisz swoje nazwisko..." autocomplete="off">
         <div class="suggestions" id="suggestions"></div>
+        <div id="studentInfo" style="margin-top:15px; font-weight:bold; color:var(--color-primary);"></div>
     </div>
 
-    <div id="studentInfo" class="student-badge"></div>
-    <div id="scheduleContainer"></div>
+    <div class="view-controls" id="viewControls">
+        <button class="view-btn active" onclick="switchView('list')">📋 Lista zajęć</button>
+        <button class="view-btn" onclick="switchView('calendar')">📆 Kalendarz</button>
+    </div>
+
+    <div id="listView" class="schedule-container active">
+        <p style="text-align:center; color:#888;">Wybierz studenta, aby zobaczyć plan.</p>
+    </div>
+
+    <div id="calendarView" class="schedule-container">
+        <div id="calendarContent"></div>
+    </div>
 </div>
 
 <script>
-    // ================= DANE STUDENTÓW =================
-    // Lista przepisana ze zdjęcia. 
-    // Podział na WF (JW): 
-    // Nr 1-24 -> JW1
-    // Nr 25-48 -> JW2
-    // Nr 49-73 -> JW3
-    const studentsRaw = [
-        {name: "Mazurkiewicz Alicja", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Adamski Jędrzej", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Zaborowska Amelia", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Bazyliński Mikołaj", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Biczyńska Marika", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Borowiecka Joanna", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Brunda Julia", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Budek Natalia", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Budniak Agata", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Bukowska Martyna", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Charzyńska Laura", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Chłoń Kinga", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Chmielewski Kazimierz", s:"S1", cw:"1", r:"I", l:"A"},
-        {name: "Felusiak Dominika", s:"S1", cw:"1", r:"I", l:"B"},
-        {name: "Giętkowski Dawid", s:"S1", cw:"1", r:"I", l:"B"},
-        {name: "Gjostol Stella", s:"S1", cw:"1", r:"I", l:"B"},
-        {name: "Golec Anna", s:"S1", cw:"1", r:"II", l:"B"},
-        {name: "Grochowska Zuzanna", s:"S1", cw:"1", r:"II", l:"B"},
-        {name: "Hawro Wiktoria", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Jackiewicz Julia", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Janicki Jakub", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Jatczak Karolina", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Jędrzejczak-Łobacz Nina", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Karandyszowska Elena", s:"S1", cw:"2", r:"II", l:"B"},
-        {name: "Kolendowicz Nadia", s:"S1", cw:"2", r:"II", l:"B"}, // 25 - Start JW2 logicznie
-        {name: "Kołtun Przemysław", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Sójka Jaśmina", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Majewski Maciej", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Kowalska Zofia", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Kubiak Alicja", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Lange Natalia", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Ligenza Anna", s:"S1", cw:"2", r:"II", l:"C"},
-        {name: "Madej Kinga", s:"S1", cw:"2", r:"III", l:"C"},
-        {name: "Malicka Elżbieta", s:"S1", cw:"2", r:"III", l:"C"},
-        {name: "Małecka Joanna", s:"S1", cw:"2", r:"III", l:"C"},
-        {name: "Markiewicz Zofia", s:"S1", cw:"2", r:"III", l:"C"},
-        {name: "Miętus Julia", s:"S1", cw:"2", r:"III", l:"C"},
-        {name: "Miśnik Anna", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Osmólska Nina", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Ossowska Barbara", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Pich Julia", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Piech Amelia", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Podkolzin Oleksandr", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Pudlis Hanna", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Radkiewicz Sandra", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Rainer Samanta", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Raźniewski Antoni", s:"S2", cw:"3", r:"III", l:"D"},
-        {name: "Saczuk Małgorzata", s:"S2", cw:"3", r:"IV", l:"D"}, // 48 - Koniec JW2
-        {name: "Saja Antonina", s:"S2", cw:"3", r:"IV", l:"D"}, // Start JW3
-        {name: "Sernik Julia", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Woźniak Aleksandra", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Skubisz Natalia", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Smacki Alex", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Sochanowska Dominika", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Szawracki Cyprian", s:"S2", cw:"3", r:"IV", l:"E"},
-        {name: "Tomczyk Sabina", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Trojanowska Wiktoria", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Urbańska Matylda", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Weinar Aleksandra", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Wejda Anna", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Wieteska Weronika", s:"S2", cw:"4", r:"IV", l:"E"},
-        {name: "Wołkowska Weronika", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Wrzesińska Kinga", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Yakymenko Sofija", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Zaidlewicz Michał", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Zarębska Karolina", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Zatylna Kaja", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Zielińska Sara", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Zwara Zuzanna", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Rajczyk Jagna", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Kwaplińska Alicja", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Barańska Amanda", s:"S2", cw:"4", r:"V", l:"F"},
-        {name: "Kujawa Aleksandra", s:"S2", cw:"4", r:"V", l:"F"}
-    ];
+    // ================= DNI WOLNE 2026 =================
+    // Format: 'D-M': 'Nazwa' (rok 2026 jest domyślny w logice)
+    const holidays = {
+        '3-4': 'Przerwa świąteczna',
+        '4-4': 'Przerwa świąteczna',
+        '5-4': 'Wielkanoc',
+        '6-4': 'Poniedziałek Wielkanocny',
+        '7-4': 'Przerwa świąteczna',
+        '30-4': 'Dzień Rektorski',
+        '1-5': 'Święto Pracy',
+        '3-5': 'Święto Konstytucji',
+        '22-5': 'Juwenalia (Rektorski)',
+        '4-6': 'Boże Ciało',
+        '5-6': 'Dzień Rektorski'
+    };
 
-    // Automatyczne przypisanie grup WF (JW1, JW2, JW3)
-    const students = studentsRaw.map((s, index) => {
-        let jwGroup = 'JW1';
-        if (index >= 24 && index < 48) jwGroup = 'JW2';
-        if (index >= 48) jwGroup = 'JW3';
-        
-        return {
-            name: s.name,
-            groups: {
-                sem: s.s,      // S1, S2
-                cw: s.cw,      // 1, 2, 3, 4
-                lab: s.l,      // A, B, C...
-                roman: s.r,    // I, II...
-                jw: jwGroup    // JW1, JW2, JW3
-            }
-        };
-    });
+    // ================= DANE STUDENTÓW =================
+    const students = [
+        { name: "Mazurkiewicz Alicja", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Adamski Jędrzej", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Zaborowska Amelia", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Bazyliński Mikołaj", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Biczyńska Marika", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Borowiecka Joanna", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Brunda Julia", groups: { S: "S1", JW: "JW1", cw: "1", maly: "a", duzy: "A" } },
+        { name: "Budek Natalia", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Budniak Agata", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Bukowska Martyna", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Charzyńska Laura", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Chłoń Kinga", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Ligenza Anna", groups: { S: "S1", JW: "JW1", cw: "1", maly: "b", duzy: "A" } },
+        { name: "Felusiak Dominika", groups: { S: "S1", JW: "JW1", cw: "1", maly: "c", duzy: "B" } },
+        { name: "Giętkowski Dawid", groups: { S: "S1", JW: "JW1", cw: "1", maly: "c", duzy: "B" } },
+        { name: "Gjostol Stella", groups: { S: "S1", JW: "JW1", cw: "1", maly: "c", duzy: "B" } },
+        { name: "Golec Anna", groups: { S: "S1", JW: "JW1", cw: "1", maly: "c", duzy: "B" } },
+        { name: "Grochowska Zuzanna", groups: { S: "S1", JW: "JW1", cw: "1", maly: "c", duzy: "B" } },
+        { name: "Hawro Wiktoria", groups: { S: "S1", JW: "JW1", cw: "2", maly: "c", duzy: "B" } },
+        { name: "Jackiewicz Julia", groups: { S: "S1", JW: "JW1", cw: "2", maly: "c", duzy: "B" } },
+        { name: "Janicki Jakub", groups: { S: "S1", JW: "JW1", cw: "2", maly: "d", duzy: "B" } },
+        { name: "Jatczak Karolina", groups: { S: "S1", JW: "JW1", cw: "2", maly: "d", duzy: "B" } },
+        { name: "Jędrzejczak-Łobacz Nina", groups: { S: "S1", JW: "JW1", cw: "2", maly: "d", duzy: "B" } },
+        { name: "Karandyszowska Elena", groups: { S: "S1", JW: "JW1", cw: "2", maly: "d", duzy: "B" } },
+        { name: "Kołtan Przemysław", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
+        { name: "Sójka Jaśmina", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
+        { name: "Majewski Maciej", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
+        { name: "Kowalska Zofia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
+        { name: "Kubiak Alicja", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Lange Natalia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Madej Kinga", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Malicka Elżbieta", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Małecka Joanna", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Markiewicz Zofia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Miętus Julia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Miśnik Anna", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Osmólska Nina", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Ossowska Barbara", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Pich Julia", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Piech Amelia", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Saczuk Małgorzata", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Pudlis Hanna", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Rainer Samanta", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Szews Julia", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Karwala Wiktoria", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Wołkowska Weronika", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Saja Antonina", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Wons Maria", groups: { S: "S2", JW: "JW2", cw: "3", maly: "g", duzy: "D" } },
+        { name: "Sernik Julia", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
+        { name: "Woźniak Aleksandra", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
+        { name: "Skubisz Natalia", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
+        { name: "Smacki Alex", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
+        { name: "Sochanowska Dominika", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
+        { name: "Raźniewski Antoni", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
+        { name: "Tomczyk Sabina", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
+        { name: "Trojanowska Wiktoria", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
+        { name: "Urbańska Matylda", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
+        { name: "Weinar Aleksandra", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
+        { name: "Wejda Anna", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
+        { name: "Wrzesińska Kinga", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Yakymenko Sofija", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Zaidlewicz Michał", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Zarębska Karolina", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Gąsiorowska Emilia", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Szarmach (Zatylna) Kaja", groups: { S: "S2", JW: "JW3", cw: "4", maly: "i", duzy: "F" } },
+        { name: "Zielińska Sara", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } },
+        { name: "Zwara Zuzanna", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } },
+        { name: "Rajczyk Jagna", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } },
+        { name: "Kwaplińska Alicja", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } },
+        { name: "Barańska Amanda", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } },
+        { name: "Kujawa Aleksandra", groups: { S: "S2", JW: "JW3", cw: "4", maly: "j", duzy: "F" } }
+    ];
 
     // ================= HARMONOGRAM =================
-    // Dane przepisane z planu na zdjęciach
     const schedule = [
-        // --- PONIEDZIAŁEK ---
-        { d: 'Poniedziałek', t: '17:00-19:15', n: 'Język obcy', g: 'JW1', r: 'SPNJO', date: '2026-03-09 do 2026-05-18' },
-        { d: 'Poniedziałek', t: '15:00-16:30', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', date: '2026-05-25 do 2026-06-22' },
-        { d: 'Poniedziałek', t: '09:45-11:15', n: 'Socjologia medycyny', g: '1', r: 'Rektorat 215', date: '2026-04-13 do 2026-05-11' },
-        
-        // Podstawy neurologii - grupy "małe" z planu zmapowałem na grupy laboratoryjne (d -> D, f -> F)
-        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'D', r: 'KN', date: '2026-05-04' }, 
-        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'D', r: 'KN', date: '2026-05-04' },
-        
-        { d: 'Poniedziałek', t: '15:00-16:30', n: 'Kliniczny zarys chorób', g: 'S1', r: 'Rektorat 215', date: '2026-03-09 do 2026-04-13' },
-        { d: 'Poniedziałek', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S1', r: 'Rektorat 215', date: '2026-03-30 do 2026-06-08' },
-        
-        { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', date: '2026-02-23 do 2026-06-08 (bez 18.05)' },
-        
-        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurokgnitywistyki', g: '3', r: 'KN', date: '2026-06-01 do 2026-06-08' },
-        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurokgnitywistyki', g: '4', r: 'KN', date: '2026-06-01 do 2026-06-08' },
-        
-        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'F', r: 'KN', date: '2026-04-20' },
-        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'F', r: 'KN', date: '2026-04-20' },
-        
-        { d: 'Poniedziałek', t: '16:45-18:15', n: 'Kliniczny zarys chorób', g: 'S2', r: 'Rektorat 215', date: '2026-03-09 do 2026-04-13' },
-        
-        // Wykłady (W) - dla wszystkich
-        { d: 'Poniedziałek', t: '09:00-12:00', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', date: '2026-02-23 do 2026-03-02' },
-        { d: 'Poniedziałek', t: '09:45-11:15', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', date: '2026-03-09' },
-        { d: 'Poniedziałek', t: '17:45-20:00', n: 'Kliniczny zarys chorób (W)', g: 'W', r: 'online', date: '2026-02-23' },
+        // ----- PONIEDZIAŁEK -----
+        { d: 'Poniedziałek', t: '17:00-19:15', n: 'Język obcy', g: 'JW1', r: 'SPNJO', start: '2026-03-09', end: '2026-05-18' },
+        { d: 'Poniedziałek', t: '15:00-16:30', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', start: '2026-05-25', end: '2026-06-22' },
+        { d: 'Poniedziałek', t: '09:45-11:15', n: 'Socjologia medycyny', g: '1', r: 'Rektorat 215', start: '2026-04-13', end: '2026-05-11' },
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'd', r: 'KN', start: '2026-05-04', end: '2026-05-04' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'd', r: 'KN', start: '2026-05-04', end: '2026-05-04' },
+        { d: 'Poniedziałek', t: '15:00-16:30', n: 'Kliniczny zarys chorób', g: 'S1', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
+        { d: 'Poniedziałek', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S1', r: 'Rektorat 215', start: '2026-03-30', end: '2026-06-08' },
+        { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', start: '2026-02-23', end: '2026-06-08' }, // brak 18.05
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '3', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '4', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'f', r: 'KN', start: '2026-04-20', end: '2026-04-20' },
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'f', r: 'KN', start: '2026-04-20', end: '2026-04-20' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'i', r: 'KN', start: '2026-05-11', end: '2026-05-11' },
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'i', r: 'KN', start: '2026-05-11', end: '2026-05-11' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'j', r: 'KN', start: '2026-05-18', end: '2026-05-18' },
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'j', r: 'KN', start: '2026-05-18', end: '2026-05-18' },
+        { d: 'Poniedziałek', t: '16:45-18:15', n: 'Kliniczny zarys chorób', g: 'S2', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
+        { d: 'Poniedziałek', t: '09:00-12:00', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', start: '2026-02-23', end: '2026-03-02' },
+        { d: 'Poniedziałek', t: '09:45-11:15', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', start: '2026-03-09', end: '2026-03-09' },
+        { d: 'Poniedziałek', t: '17:45-20:00', n: 'Kliniczny zarys chorób (W)', g: 'W', r: 'online', start: '2026-02-23', end: '2026-02-23' },
+        { d: 'Poniedziałek', t: '17:45-19:15', n: 'Kliniczny zarys chorób (W)', g: 'W', r: 'online', start: '2026-03-02', end: '2026-03-02' },
 
-        // --- WTOREK ---
-        { d: 'Wtorek', t: '15:30-17:00', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', date: '2026-04-21 do 2026-06-23' },
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokgnitywistyki', g: '1', r: 'KN', date: '2026-06-02 do 2026-06-09' },
-        { d: 'Wtorek', t: '12:00-15:45', n: 'Podstawy neurokgnitywistyki', g: '2', r: 'KN', date: '2026-06-02 do 2026-06-09' },
-        
-        { d: 'Wtorek', t: '12:30-14:45', n: 'Język migowy', g: '1', r: 'Chłapowskiego 2', date: '2026-04-14 do 2026-05-19' },
-        { d: 'Wtorek', t: '10:00-12:15', n: 'Język migowy', g: '2', r: 'Chłapowskiego 2', date: '2026-04-14 do 2026-05-19' },
-        { d: 'Wtorek', t: '09:45-11:15', n: 'Pedagogika zabawy', g: '1', r: 'Chłapowskiego 2', date: '2026-05-05 do 2026-05-26' },
-        
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S1', r: 'KN', date: '2026-03-24 do 2026-03-31' },
-        { d: 'Wtorek', t: '13:15-14:45', n: 'Podstawy biochemii', g: 'S1', r: 'ZŻCzIM 202', date: '2026-03-03 do 2026-03-31' },
-        { d: 'Wtorek', t: '08:00-09:30', n: 'Pedagogika zabawy', g: 'S1', r: 'Chłapowskiego 2', date: '2026-05-05 do 2026-05-26' },
-        
-        { d: 'Wtorek', t: '18:30-20:00', n: 'Wychowanie fizyczne', g: 'JW2', r: 'SWFiS', date: '2026-02-24 do 2026-03-31' },
-        { d: 'Wtorek', t: '18:00-19:30', n: 'Wychowanie fizyczne', g: 'JW2', r: 'SWFiS', date: '2026-04-14 do 2026-06-09' },
-        
-        { d: 'Wtorek', t: '14:00-17:00', n: 'Psychologia komunikacji', g: '3', r: 'KP 213', date: '2026-05-05 do 2026-06-02' },
-        { d: 'Wtorek', t: '17:00-20:00', n: 'Psychologia komunikacji', g: '4', r: 'KP 213', date: '2026-05-05 do 2026-06-02' },
-        
-        { d: 'Wtorek', t: '11:00-12:30', n: 'Emisja głosu', g: '3', r: 'Chłapowskiego A', date: '2026-04-14 do 2026-05-12' },
-        { d: 'Wtorek', t: '12:30-14:00', n: 'Emisja głosu', g: '4', r: 'Chłapowskiego A', date: '2026-04-14 do 2026-05-12' },
-        
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokgnitywistyki', g: 'S2', r: 'KN', date: '2026-05-19 do 2026-05-26' },
-        { d: 'Wtorek', t: '11:30-13:00', n: 'Podstawy biochemii', g: 'S2', r: 'ZŻCzIM 202', date: '2026-03-03 do 2026-03-31' },
-        { d: 'Wtorek', t: '08:00-10:15', n: 'Pedagogika', g: 'S2', r: 'Chłapowskiego A', date: '2026-03-10 do 2026-04-28' },
-        
-        { d: 'Wtorek', t: '10:00-13:45', n: 'Język migowy (W)', g: 'W', r: 'online', date: '2026-02-24' },
-        { d: 'Wtorek', t: '14:00-17:00', n: 'Prawo własności intelektualnej (W)', g: 'W', r: 'online', date: '2026-02-24' },
-        { d: 'Wtorek', t: '16:00-17:30', n: 'Socjologia medycyny (W)', g: 'W', r: 'online', date: '2026-03-03 do 2026-03-31' },
+        // ----- WTOREK -----
+        { d: 'Wtorek', t: '15:30-17:00', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', start: '2026-04-21', end: '2026-06-23' },
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '1', r: 'KN', start: '2026-06-02', end: '2026-06-09' },
+        { d: 'Wtorek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '2', r: 'KN', start: '2026-06-02', end: '2026-06-09' },
+        { d: 'Wtorek', t: '12:30-14:45', n: 'Język migowy', g: '1', r: 'Chłapowskiego 2', start: '2026-04-14', end: '2026-05-19' },
+        { d: 'Wtorek', t: '10:00-12:15', n: 'Język migowy', g: '2', r: 'Chłapowskiego 2', start: '2026-04-14', end: '2026-05-19' },
+        { d: 'Wtorek', t: '09:45-11:15', n: 'Pedagogika zabawy', g: '1', r: 'Chłapowskiego 2', start: '2026-05-05', end: '2026-05-26' },
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S1', r: 'KN', start: '2026-03-24', end: '2026-03-31' },
+        { d: 'Wtorek', t: '13:15-14:45', n: 'Podstawy biochemii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-03-03', end: '2026-03-31' },
+        { d: 'Wtorek', t: '08:00-09:30', n: 'Pedagogika zabawy', g: 'S1', r: 'Chłapowskiego 2', start: '2026-05-05', end: '2026-05-26' },
+        { d: 'Wtorek', t: '18:30-20:00', n: 'Wychowanie fizyczne', g: 'JW2', r: 'SWFiS', start: '2026-02-24', end: '2026-03-31' },
+        { d: 'Wtorek', t: '18:00-19:30', n: 'Wychowanie fizyczne', g: 'JW2', r: 'SWFiS', start: '2026-04-14', end: '2026-06-09' },
+        { d: 'Wtorek', t: '14:00-17:00', n: 'Psychologia komunikacji', g: '3', r: 'KP 213', start: '2026-05-05', end: '2026-06-02' },
+        { d: 'Wtorek', t: '17:00-20:00', n: 'Psychologia komunikacji', g: '4', r: 'KP 213', start: '2026-05-05', end: '2026-06-02' },
+        { d: 'Wtorek', t: '11:00-12:30', n: 'Emisja głosu', g: '3', r: 'Chłapowskiego A', start: '2026-04-14', end: '2026-05-12' },
+        { d: 'Wtorek', t: '12:30-14:00', n: 'Emisja głosu', g: '4', r: 'Chłapowskiego A', start: '2026-04-14', end: '2026-05-12' },
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S2', r: 'KN', start: '2026-05-19', end: '2026-05-26' },
+        { d: 'Wtorek', t: '11:30-13:00', n: 'Podstawy biochemii', g: 'S2', r: 'ZŻCzIM 202', start: '2026-03-03', end: '2026-03-31' },
+        { d: 'Wtorek', t: '08:00-10:15', n: 'Pedagogika', g: 'S2', r: 'Chłapowskiego A', start: '2026-03-10', end: '2026-04-28' },
+        { d: 'Wtorek', t: '10:00-13:45', n: 'Język migowy (W)', g: 'W', r: 'online', start: '2026-02-24', end: '2026-02-24' },
+        { d: 'Wtorek', t: '14:00-17:00', n: 'Prawo własności intelektualnej (W)', g: 'W', r: 'online', start: '2026-02-24', end: '2026-02-24' },
+        { d: 'Wtorek', t: '16:00-17:30', n: 'Socjologia medycyny (W)', g: 'W', r: 'online', start: '2026-03-03', end: '2026-03-31' },
 
-        // --- ŚRODA ---
-        { d: 'Środa', t: '15:00-17:15', n: 'Język obcy', g: 'JW2', r: 'SPNJO', date: '2026-03-11 do 2026-05-13' },
-        { d: 'Środa', t: '15:00-18:00', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', date: '2026-05-20 do 2026-05-20' },
-        { d: 'Środa', t: '13:45-16:45', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', date: '2026-05-27 do 2026-06-17' },
-        { d: 'Środa', t: '10:30-13:30', n: 'Psychologia komunikacji', g: '2', r: 'KP 213', date: '2026-06-03 do 2026-06-24' },
-        
-        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', date: '2026-02-25 do 2026-04-29' },
-        { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '2', r: 'Chłapowskiego B', date: '2026-02-25 do 2026-04-29' },
+        // ----- ŚRODA -----
+        { d: 'Środa', t: '15:00-17:15', n: 'Język obcy', g: 'JW2', r: 'SPNJO', start: '2026-03-11', end: '2026-05-13' },
+        { d: 'Środa', t: '15:00-18:00', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', start: '2026-05-20', end: '2026-05-20' },
+        { d: 'Środa', t: '13:45-16:45', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', start: '2026-05-27', end: '2026-06-17' },
+        { d: 'Środa', t: '10:30-13:30', n: 'Psychologia komunikacji', g: '2', r: 'KP 213', start: '2026-06-03', end: '2026-06-24' },
+        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-04-29' },
+        { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '2', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-04-29' },
+        { d: 'Środa', t: '08:00-10:15', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-01', end: '2026-04-15' },
+        { d: 'Środa', t: '08:00-08:45', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-22', end: '2026-04-22' },
+        { d: 'Środa', t: '10:30-12:45', n: 'Pedagogika', g: '2', r: 'Chłapowskiego 2', start: '2026-04-01', end: '2026-04-15' },
+        { d: 'Środa', t: '10:30-11:15', n: 'Pedagogika', g: '2', r: 'Chłapowskiego 2', start: '2026-04-22', end: '2026-04-22' },
+        { d: 'Środa', t: '11:15-13:30', n: 'Pedagogika zabawy', g: '1', r: 'Chłapowskiego 2', start: '2026-05-06', end: '2026-05-13' },
+        { d: 'Środa', t: '14:30-17:30', n: 'Pierwsza pomoc', g: 'A', r: 'CSM', start: '2026-04-01', end: '2026-04-29' },
+        { d: 'Środa', t: '17:45-20:45', n: 'Pierwsza pomoc', g: 'B', r: 'CSM', start: '2026-04-01', end: '2026-04-29' },
+        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S1', r: 'KN', start: '2026-05-20', end: '2026-05-27' },
+        { d: 'Środa', t: '18:15-19:45', n: 'Psychologia komunikacji', g: 'S1', r: 'WNZ 210', start: '2026-02-25', end: '2026-03-25' },
+        { d: 'Środa', t: '09:45-11:15', n: 'Socjologia medycyny', g: '3', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, // brak 13.05
+        { d: 'Środa', t: '13:15-14:45', n: 'Socjologia medycyny', g: '4', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, // brak 13.05
+        { d: 'Środa', t: '13:30-15:00', n: 'Emisja głosu', g: '3', r: 'Chłapowskiego 2', start: '2026-05-20', end: '2026-06-17' },
+        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'g', r: 'KN', start: '2026-05-13', end: '2026-05-13' },
+        { d: 'Środa', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'g', r: 'KN', start: '2026-05-13', end: '2026-05-13' },
+        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S2', r: 'KN', start: '2026-03-25', end: '2026-04-01' },
+        { d: 'Środa', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S2', r: 'Rektorat 307', start: '2026-04-08', end: '2026-06-17' }, // brak 13.05, inne sale w czerwcu
+        { d: 'Środa', t: '12:45-14:15', n: 'Psychologia komunikacji', g: 'S2', r: 'KP 211', start: '2026-02-25', end: '2026-03-25' },
+        { d: 'Środa', t: '18:15-20:30', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-03-11' },
+        { d: 'Środa', t: '18:15-19:00', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-03-18', end: '2026-03-18' },
+        { d: 'Środa', t: '09:45-12:00', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-02-25' },
+        { d: 'Środa', t: '09:45-11:15', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-03-03', end: '2026-03-03' },
+
+        // ----- CZWARTEK -----
+        { d: 'Czwartek', t: '11:00-12:30', n: 'Socjologia medycyny', g: '2', r: 'MCD 2 205', start: '2026-04-02', end: '2026-05-07' },
+        { d: 'Czwartek', t: '08:00-11:00', n: 'Psychologia komunikacji', g: '2', r: 'KP 213', start: '2026-05-08', end: '2026-05-28' },
+        { d: 'Czwartek', t: '10:30-12:45', n: 'Język migowy', g: '1', r: 'Chłapowskiego 2', start: '2026-05-28', end: '2026-06-25' },
+        { d: 'Czwartek', t: '13:00-15:15', n: 'Język migowy', g: '2', r: 'Chłapowskiego 2', start: '2026-05-28', end: '2026-06-25' },
+        { d: 'Czwartek', t: '15:30-17:45', n: 'Pedagogika zabawy', g: '2', r: 'Chłapowskiego 2', start: '2026-05-14', end: '2026-06-18' },
+        { d: 'Czwartek', t: '14:30-17:30', n: 'Pierwsza pomoc', g: 'C', r: 'CSM', start: '2026-04-02', end: '2026-05-07' },
+        { d: 'Czwartek', t: '13:00-14:30', n: 'Podstawy biochemii', g: 'A', r: 'ZŻCzIM 102', start: '2026-03-12', end: '2026-04-16' },
+        { d: 'Czwartek', t: '14:30-16:00', n: 'Podstawy biochemii', g: 'B', r: 'ZŻCzIM 102', start: '2026-03-12', end: '2026-04-16' },
+        { d: 'Czwartek', t: '08:00-10:15', n: 'Pedagogika', g: 'S1', r: 'Chłapowskiego 3', start: '2026-03-12', end: '2026-04-23' },
+        { d: 'Czwartek', t: '16:00-18:15', n: 'Język obcy', g: 'JW3', r: 'SPNJO', start: '2026-03-12', end: '2026-05-21' },
+        { d: 'Czwartek', t: '10:00-12:15', n: 'Język migowy', g: '3', r: 'Chłapowskiego 3', start: '2026-02-26', end: '2026-05-14' },
+        { d: 'Czwartek', t: '10:00-11:30', n: 'Język migowy', g: '3', r: 'Chłapowskiego 3', start: '2026-05-21', end: '2026-05-21' },
+        { d: 'Czwartek', t: '12:45-15:00', n: 'Język migowy', g: '4', r: 'Chłapowskiego 3', start: '2026-02-26', end: '2026-05-14' },
+        { d: 'Czwartek', t: '12:45-14:15', n: 'Język migowy', g: '4', r: 'Chłapowskiego 3', start: '2026-05-21', end: '2026-05-21' },
+        { d: 'Czwartek', t: '13:00-15:15', n: 'Pedagogika', g: '3', r: 'Chłapowskiego 3', start: '2026-04-02', end: '2026-04-16' },
+        { d: 'Czwartek', t: '13:00-13:45', n: 'Pedagogika', g: '3', r: 'Chłapowskiego 3', start: '2026-04-23', end: '2026-04-23' },
+        { d: 'Czwartek', t: '10:30-12:45', n: 'Pedagogika', g: '4', r: 'Chłapowskiego 1', start: '2026-04-02', end: '2026-04-16' },
+        { d: 'Czwartek', t: '10:30-11:15', n: 'Pedagogika', g: '4', r: 'Chłapowskiego 1', start: '2026-04-23', end: '2026-04-23' },
+        { d: 'Czwartek', t: '17:45-20:45', n: 'Pierwsza pomoc', g: 'D', r: 'CSM', start: '2026-04-02', end: '2026-05-07' },
+        { d: 'Czwartek', t: '11:00-14:45', n: 'Kreatywne myślenie', g: 'S2', r: 'WNZ 108', start: '2026-05-28', end: '2026-06-25' },
+        { d: 'Czwartek', t: '19:15-20:45', n: 'Podstawy neurokognitywistyki (W)', g: 'W', r: 'online', start: '2026-02-26', end: '2026-02-26' },
+        { d: 'Czwartek', t: '19:15-20:45', n: 'Podstawy neurokognitywistyki (W)', g: 'W', r: 'online', start: '2026-03-12', end: '2026-04-02' },
+        { d: 'Czwartek', t: '17:30-19:00', n: 'Pierwsza pomoc (W)', g: 'W', r: 'online', start: '2026-02-26', end: '2026-03-26' },
+
+        // ----- PIĄTEK -----
+        { d: 'Piątek', t: '09:45-11:15', n: 'Podstawy biochemii', g: 'C', r: 'ZŻCzIM 102', start: '2026-03-13', end: '2026-04-24' },
+        { d: 'Piątek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'a', r: 'KN', start: '2026-04-10', end: '2026-04-10' },
+        { d: 'Piątek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'a', r: 'KN', start: '2026-04-10', end: '2026-04-10' },
+        { d: 'Piątek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'b', r: 'KN', start: '2026-04-17', end: '2026-04-17' },
+        { d: 'Piątek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'b', r: 'KN', start: '2026-04-17', end: '2026-04-17' },
+        { d: 'Piątek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'c', r: 'KN', start: '2026-04-24', end: '2026-04-24' },
+        { d: 'Piątek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'c', r: 'KN', start: '2026-04-24', end: '2026-04-24' },
+        { d: 'Piątek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'e', r: 'KN', start: '2026-05-08', end: '2026-05-08' },
+        { d: 'Piątek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'e', r: 'KN', start: '2026-05-08', end: '2026-05-08' },
+        { d: 'Piątek', t: '09:45-12:45', n: 'Kreatywne myślenie', g: 'S1', r: 'MCD 2 209A', start: '2026-05-15', end: '2026-06-26' },
+        { d: 'Piątek', t: '08:00-10:15', n: 'Pedagogika zabawy', g: '3', r: 'Chłapowskiego 2', start: '2026-05-15', end: '2026-06-26' },
+        { d: 'Piątek', t: '12:15-14:30', n: 'Pedagogika zabawy', g: '4', r: 'Chłapowskiego 2', start: '2026-05-15', end: '2026-06-26' },
+        { d: 'Piątek', t: '17:45-20:45', n: 'Pierwsza pomoc', g: 'E', r: 'CSM', start: '2026-03-27', end: '2026-05-08' },
+        { d: 'Piątek', t: '14:30-17:30', n: 'Pierwsza pomoc', g: 'F', r: 'CSM', start: '2026-03-27', end: '2026-05-08' },
+        { d: 'Piątek', t: '13:15-14:45', n: 'Podstawy biochemii', g: 'D', r: 'ZŻCzIM 102', start: '2026-03-13', end: '2026-04-24' },
+        { d: 'Piątek', t: '15:00-16:30', n: 'Podstawy biochemii', g: 'E', r: 'ZŻCzIM 102', start: '2026-03-13', end: '2026-04-24' },
+        { d: 'Piątek', t: '11:30-13:00', n: 'Podstawy biochemii', g: 'F', r: 'ZŻCzIM 102', start: '2026-03-13', end: '2026-04-24' },
+        { d: 'Piątek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'h', r: 'KN', start: '2026-05-15', end: '2026-05-15' },
+        { d: 'Piątek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'h', r: 'KN', start: '2026-05-15', end: '2026-05-15' },
+        { d: 'Piątek', t: '10:30-12:00', n: 'Pedagogika zabawy', g: 'S2', r: 'Chłapowskiego 2', start: '2026-05-08', end: '2026-06-19' }
     ];
 
-    // ================= LOGIKA =================
+    // ================= LOGIKA APLIKACJI =================
+    
+    let currentStudent = null;
     const searchInput = document.getElementById('searchInput');
     const suggestions = document.getElementById('suggestions');
     const studentInfo = document.getElementById('studentInfo');
-    const scheduleContainer = document.getElementById('scheduleContainer');
-    let currentStudent = null;
+    const listView = document.getElementById('listView');
+    const calendarView = document.getElementById('calendarView');
+    const calendarContent = document.getElementById('calendarContent');
+    const viewControls = document.getElementById('viewControls');
 
-    // Funkcja przypisująca kolory do przedmiotów
-    function getClassStyle(name) {
-        const lower = name.toLowerCase();
-        if(lower.includes('neurolog')) return 'sub-neuro';
-        if(lower.includes('neurokog')) return 'sub-neuro';
-        if(lower.includes('socjologia')) return 'sub-socjo';
-        if(lower.includes('psychologia')) return 'sub-psych';
-        if(lower.includes('wychowanie') || lower.includes('pedagogika')) return 'sub-wf';
-        if(lower.includes('język') || lower.includes('emisja')) return 'sub-jezyk';
-        if(lower.includes('biochem') || lower.includes('chorób')) return 'sub-bio';
+    function getSubjectClass(name) {
+        const n = name.toLowerCase();
+        if(n.includes('pedagogika')) return 's-pedagogika';
+        if(n.includes('pomoc')) return 's-pomoc';
+        if(n.includes('socjologia')) return 's-socjo';
+        if(n.includes('neurolog')) return 's-neuro';
+        if(n.includes('psychologia')) return 's-psych';
+        if(n.includes('wychowanie')) return 's-wf';
+        if(n.includes('język') && !n.includes('migowy')) return 's-jezyk';
+        if(n.includes('biochem')) return 's-bio';
+        if(n.includes('kreatywne')) return 's-kreatywne';
+        if(n.includes('migowy')) return 's-migowy';
+        if(n.includes('kognitywistyka')) return 's-kognitywistyka';
+        if(n.includes('emisja')) return 's-emisja';
         return '';
+    }
+
+    function parseDate(str) {
+        const parts = str.split('-');
+        return new Date(parts[0], parts[1]-1, parts[2]);
+    }
+
+    function isHoliday(date) {
+        const key = `${date.getDate()}-${date.getMonth() + 1}`;
+        return holidays[key] || null;
+    }
+
+    function checkGroup(student, classGroup) {
+        if(classGroup === 'W') return true;
+        const g = student.groups;
+        return (classGroup === g.S || classGroup === g.JW || classGroup === g.cw || 
+                classGroup === g.maly || classGroup === g.duzy);
     }
 
     // Wyszukiwarka
@@ -255,7 +403,6 @@
         if(val.length < 2) { suggestions.classList.remove('active'); return; }
 
         const matches = students.filter(s => s.name.toLowerCase().includes(val));
-        
         if(matches.length > 0) {
             suggestions.classList.add('active');
             matches.forEach(s => {
@@ -274,73 +421,192 @@
         currentStudent = student;
         searchInput.value = student.name;
         suggestions.classList.remove('active');
+        viewControls.style.display = 'flex';
         
-        // Pokaż badge
-        studentInfo.style.display = 'block';
-        studentInfo.innerHTML = `
-            <strong>${student.name}</strong><br>
-            Grupy: Sem: ${student.groups.sem} | Ćw: ${student.groups.cw} | Lab: ${student.groups.lab} | WF: ${student.groups.jw}
-        `;
+        studentInfo.innerText = `${student.name} (Sem: ${student.groups.S}, Język: ${student.groups.JW}, Ćw: ${student.groups.cw}, Lab: ${student.groups.maly}/${student.groups.duzy})`;
         
-        renderSchedule();
+        renderList();
+        renderCalendar();
     }
 
-    function renderSchedule() {
+    function switchView(viewName) {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.schedule-container').forEach(c => c.classList.remove('active'));
+        
+        if(viewName === 'list') {
+            listView.classList.add('active');
+            document.querySelector("button[onclick=\"switchView('list')\"]").classList.add('active');
+        } else {
+            calendarView.classList.add('active');
+            document.querySelector("button[onclick=\"switchView('calendar')\"]").classList.add('active');
+        }
+    }
+
+    function renderList() {
         if(!currentStudent) return;
-        scheduleContainer.innerHTML = '';
+        listView.innerHTML = '';
+        
+        const studentClasses = schedule.filter(item => checkGroup(currentStudent, item.g));
+        
+        // Dodajemy daty konkretnych zajęć (rozbijamy zakresy na pojedyncze dni, z pominięciem świąt)
+        let allEvents = [];
 
-        const days = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'];
-        const g = currentStudent.groups;
-
-        // Filtrowanie zajęć dla studenta
-        const myClasses = schedule.filter(item => {
-            // Jeśli przedmiot jest wykładem (W) -> dla wszystkich
-            if(item.g === 'W') return true;
+        studentClasses.forEach(item => {
+            let curr = parseDate(item.start);
+            let end = parseDate(item.end);
             
-            // Sprawdź czy grupa przedmiotu pasuje do którejś grupy studenta
-            if(item.g === g.sem) return true;  // S1, S2
-            if(item.g === g.cw) return true;   // 1, 2, 3, 4
-            if(item.g === g.jw) return true;   // JW1, JW2, JW3
-            if(item.g === g.lab) return true;  // A, B, C...
-            if(item.g === g.roman) return true;// I, II... (na wszelki wypadek)
-
-            return false;
+            while (curr <= end) {
+                const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
+                
+                // Sprawdź dzień tygodnia I CZY NIE MA ŚWIĘTA
+                if(curr.getDay() === dayMap[item.d] && !isHoliday(curr)) {
+                    // Wyjątki
+                    const dateStr = `${curr.getDate()}.${curr.getMonth()+1}`;
+                    if(item.n === 'Wychowanie fizyczne' && item.d === 'Poniedziałek' && dateStr === '18.5') {
+                        // skip
+                    } else if(item.n.includes('Socjologia') && dateStr === '13.5') {
+                        // skip
+                    } else {
+                        allEvents.push({
+                            date: new Date(curr),
+                            ...item
+                        });
+                    }
+                }
+                curr.setDate(curr.getDate() + 1);
+            }
         });
 
-        if(myClasses.length === 0) {
-            scheduleContainer.innerHTML = '<div style="text-align:center; padding:20px;">Brak zajęć w tym planie (sprawdź czy dobrze przypisano grupy).</div>';
+        allEvents.sort((a, b) => {
+            if(a.date.getTime() !== b.date.getTime()) return a.date.getTime() - b.date.getTime();
+            return a.t.localeCompare(b.t);
+        });
+
+        if(allEvents.length === 0) {
+            listView.innerHTML = '<p style="text-align:center">Brak zajęć.</p>';
             return;
         }
 
-        days.forEach(dayName => {
-            const dayClasses = myClasses.filter(c => c.d === dayName);
-            // Sortowanie po godzinie
-            dayClasses.sort((a, b) => a.t.localeCompare(b.t));
+        let lastDateStr = '';
+        const dayNames = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
+        const monthNames = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca'];
 
-            if(dayClasses.length > 0) {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'schedule-day';
-                
-                let html = `<div class="day-header">${dayName}</div>`;
-                
-                dayClasses.forEach(c => {
-                    const styleClass = getClassStyle(c.n);
-                    html += `
-                        <div class="class-item ${styleClass}">
-                            <div class="class-time">🕒 ${c.t}</div>
-                            <div class="class-name">${c.n}</div>
-                            <div class="class-details">
-                                🏫 Sala: ${c.r} <br>
-                                👥 Grupa zajęciowa: ${c.g} <br>
-                                📅 ${c.date}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                dayDiv.innerHTML = html;
-                scheduleContainer.appendChild(dayDiv);
+        allEvents.forEach(c => {
+            const dateStr = `${dayNames[c.date.getDay()]}, ${c.date.getDate()} ${monthNames[c.date.getMonth()]}`;
+            
+            if(dateStr !== lastDateStr) {
+                const header = document.createElement('h3');
+                header.style.marginTop = '20px';
+                header.style.borderBottom = '2px solid #eee';
+                header.style.fontSize = '1.1em';
+                header.innerText = dateStr;
+                listView.appendChild(header);
+                lastDateStr = dateStr;
             }
+
+            const div = document.createElement('div');
+            const colorClass = getSubjectClass(c.n);
+            div.className = `class-item ${colorClass}`;
+            div.innerHTML = `
+                <div class="class-header">
+                    <span>${c.t}</span>
+                    <span>${c.n}</span>
+                </div>
+                <div class="class-details">
+                    Sala: ${c.r} | Grupa: ${c.g}
+                </div>
+            `;
+            listView.appendChild(div);
+        });
+    }
+
+    function renderCalendar() {
+        if(!currentStudent) return;
+        calendarContent.innerHTML = '';
+
+        const months = [1, 2, 3, 4, 5]; 
+        const monthNames = ["Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec"];
+
+        months.forEach(monthIdx => {
+            const year = 2026;
+            const firstDay = new Date(year, monthIdx, 1);
+            const lastDay = new Date(year, monthIdx + 1, 0);
+            
+            const monthContainer = document.createElement('div');
+            monthContainer.style.marginBottom = '30px';
+            monthContainer.innerHTML = `<h3 style="text-align:center; margin-bottom:10px;">${monthNames[monthIdx]} ${year}</h3>`;
+            
+            const grid = document.createElement('div');
+            grid.className = 'calendar-grid';
+
+            ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'].forEach(d => {
+                const dh = document.createElement('div');
+                dh.className = 'calendar-header';
+                dh.innerText = d;
+                grid.appendChild(dh);
+            });
+
+            let startDay = firstDay.getDay() - 1; 
+            if(startDay === -1) startDay = 6;
+            for(let i=0; i<startDay; i++) {
+                grid.appendChild(document.createElement('div'));
+            }
+
+            for(let d=1; d<=lastDay.getDate(); d++) {
+                const currentDayDate = new Date(year, monthIdx, d);
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'calendar-day';
+                
+                const holidayName = isHoliday(currentDayDate);
+                if(holidayName) {
+                    dayDiv.classList.add('holiday');
+                    dayDiv.innerHTML = `<div>${d}</div><span class="holiday-label">${holidayName}</span>`;
+                } else {
+                    dayDiv.innerHTML = `<div>${d}</div>`;
+                    
+                    const dayClasses = schedule.filter(c => {
+                        if(!checkGroup(currentStudent, c.g)) return false;
+                        
+                        const sDate = parseDate(c.start);
+                        const eDate = parseDate(c.end);
+                        
+                        if (currentDayDate >= sDate && currentDayDate <= eDate) {
+                            const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
+                            if(currentDayDate.getDay() === dayMap[c.d]) {
+                                const dateStr = `${currentDayDate.getDate()}.${currentDayDate.getMonth()+1}`;
+                                if(c.n === 'Wychowanie fizyczne' && c.d === 'Poniedziałek' && dateStr === '18.5') return false;
+                                if(c.n.includes('Socjologia') && dateStr === '13.5') return false;
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+
+                    if(dayClasses.length > 0) {
+                        const dots = document.createElement('div');
+                        dots.className = 'dot-container';
+                        dayClasses.forEach(c => {
+                            const dot = document.createElement('div');
+                            dot.className = `dot ${getSubjectClass(c.n)}`;
+                            dot.title = `${c.t} ${c.n}`;
+                            dots.appendChild(dot);
+                        });
+                        dayDiv.appendChild(dots);
+                        
+                        dayDiv.onclick = () => {
+                            let info = `Plan na ${d}.${monthIdx+1}:\n`;
+                            dayClasses.sort((a,b)=>a.t.localeCompare(b.t));
+                            dayClasses.forEach(x => info += `${x.t} ${x.n} (${x.r})\n`);
+                            alert(info);
+                        };
+                        dayDiv.style.cursor = 'pointer';
+                    }
+                }
+                grid.appendChild(dayDiv);
+            }
+
+            monthContainer.appendChild(grid);
+            calendarContent.appendChild(monthContainer);
         });
     }
 
