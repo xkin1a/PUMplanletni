@@ -12,7 +12,7 @@
             --color-text-secondary: #64748b;
             --color-primary: #2563eb;
             --color-border: #e2e8f0;
-            --color-holiday: #fee2e2; /* Jasnoczerwony dla wolnego */
+            --color-holiday: #fee2e2;
             --color-holiday-text: #991b1b;
         }
 
@@ -78,6 +78,8 @@
         .s-migowy { border-color: #14b8a6; background-color: #14b8a6; }
         .s-kognitywistyka { border-color: #f97316; background-color: #f97316; }
         .s-emisja { border-color: #d946ef; background-color: #d946ef; }
+        .s-praktyki { border-color: #dc2626; background-color: #dc2626; } /* Czerwony - Dobre praktyki */
+        .s-relaks { border-color: #f97316; background-color: #f97316; } /* Pomarańcz - Relaksacja */
 
         .dot.s-pedagogika { background: #f59e0b; }
         .dot.s-pomoc { background: #ef4444; }
@@ -91,6 +93,8 @@
         .dot.s-migowy { background: #14b8a6; }
         .dot.s-kognitywistyka { background: #f97316; }
         .dot.s-emisja { background: #d946ef; }
+        .dot.s-praktyki { background: #dc2626; }
+        .dot.s-relaks { background: #f97316; }
 
         .class-item.s-pedagogika { background: rgba(245, 158, 11, 0.1); }
         .class-item.s-pomoc { background: rgba(239, 68, 68, 0.1); }
@@ -104,6 +108,8 @@
         .class-item.s-migowy { background: rgba(20, 184, 166, 0.1); }
         .class-item.s-kognitywistyka { background: rgba(249, 115, 22, 0.1); }
         .class-item.s-emisja { background: rgba(217, 70, 239, 0.1); }
+        .class-item.s-praktyki { background: rgba(220, 38, 38, 0.1); }
+        .class-item.s-relaks { background: rgba(249, 115, 22, 0.1); }
     </style>
 </head>
 <body>
@@ -136,7 +142,6 @@
 
 <script>
     // ================= DNI WOLNE 2026 =================
-    // Format: 'D-M': 'Nazwa' (rok 2026 jest domyślny w logice)
     const holidays = {
         '3-4': 'Przerwa świąteczna',
         '4-4': 'Przerwa świąteczna',
@@ -181,7 +186,7 @@
         { name: "Sójka Jaśmina", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
         { name: "Majewski Maciej", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
         { name: "Kowalska Zofia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
-        { name: "Kubiak Alicja", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Kubiak Alicja", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
         { name: "Lange Natalia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Madej Kinga", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Malicka Elżbieta", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
@@ -206,7 +211,7 @@
         { name: "Skubisz Natalia", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
         { name: "Smacki Alex", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
         { name: "Sochanowska Dominika", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
-        { name: "Raźniewski Antoni", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
+        { name: "Raźniewski Antoni", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Tomczyk Sabina", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
         { name: "Trojanowska Wiktoria", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
         { name: "Urbańska Matylda", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
@@ -236,7 +241,8 @@
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'd', r: 'KN', start: '2026-05-04', end: '2026-05-04' },
         { d: 'Poniedziałek', t: '15:00-16:30', n: 'Kliniczny zarys chorób', g: 'S1', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
         { d: 'Poniedziałek', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S1', r: 'Rektorat 215', start: '2026-03-30', end: '2026-06-08' },
-        { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', start: '2026-02-23', end: '2026-06-08' }, // brak 18.05
+        { d: 'Poniedziałek', t: '08:30-10:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'WNZ 215?', start: '2026-03-23', end: '2026-03-30' },
+        { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', start: '2026-02-23', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '3', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '4', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'f', r: 'KN', start: '2026-04-20', end: '2026-04-20' },
@@ -246,10 +252,15 @@
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'j', r: 'KN', start: '2026-05-18', end: '2026-05-18' },
         { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'j', r: 'KN', start: '2026-05-18', end: '2026-05-18' },
         { d: 'Poniedziałek', t: '16:45-18:15', n: 'Kliniczny zarys chorób', g: 'S2', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
-        { d: 'Poniedziałek', t: '09:00-12:00', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', start: '2026-02-23', end: '2026-03-02' },
+        { d: 'Poniedziałek', t: '09:00-12:00', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', start: '2026-03-02', end: '2026-03-16' },
         { d: 'Poniedziałek', t: '09:45-11:15', n: 'Podstawy biochemii (W)', g: 'W', r: 'online', start: '2026-03-09', end: '2026-03-09' },
         { d: 'Poniedziałek', t: '17:45-20:00', n: 'Kliniczny zarys chorób (W)', g: 'W', r: 'online', start: '2026-02-23', end: '2026-02-23' },
         { d: 'Poniedziałek', t: '17:45-19:15', n: 'Kliniczny zarys chorób (W)', g: 'W', r: 'online', start: '2026-03-02', end: '2026-03-02' },
+        { d: 'Poniedziałek', t: '16:30-18:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'KP 211', start: '2026-03-16', end: '2026-03-16' },
+        { d: 'Poniedziałek', t: '11:15-13:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'KP / ZŻCzIM s.202', start: '2026-03-23', end: '2026-04-13' },
+        { d: 'Poniedziałek', t: '11:15-13:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'KP', start: '2026-04-27', end: '2026-05-04' },
+        { d: 'Poniedziałek', t: '08:00-11:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S1', r: 'MCD2 015', start: '2026-06-16', end: '2026-06-23' }, // Uwaga: w poniedziałki
+        { d: 'Poniedziałek', t: '12:00-15:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S2', r: 'MCD2 015', start: '2026-06-09', end: '2026-06-23' }, // Uwaga: w poniedziałki
 
         // ----- WTOREK -----
         { d: 'Wtorek', t: '15:30-17:00', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', start: '2026-04-21', end: '2026-06-23' },
@@ -258,7 +269,7 @@
         { d: 'Wtorek', t: '12:30-14:45', n: 'Język migowy', g: '1', r: 'Chłapowskiego 2', start: '2026-04-14', end: '2026-05-19' },
         { d: 'Wtorek', t: '10:00-12:15', n: 'Język migowy', g: '2', r: 'Chłapowskiego 2', start: '2026-04-14', end: '2026-05-19' },
         { d: 'Wtorek', t: '09:45-11:15', n: 'Pedagogika zabawy', g: '1', r: 'Chłapowskiego 2', start: '2026-05-05', end: '2026-05-26' },
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S1', r: 'KN', start: '2026-03-24', end: '2026-03-31' },
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S1', r: 'CNTM 20', start: '2026-03-24', end: '2026-03-31' },
         { d: 'Wtorek', t: '13:15-14:45', n: 'Podstawy biochemii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-03-03', end: '2026-03-31' },
         { d: 'Wtorek', t: '08:00-09:30', n: 'Pedagogika zabawy', g: 'S1', r: 'Chłapowskiego 2', start: '2026-05-05', end: '2026-05-26' },
         { d: 'Wtorek', t: '18:30-20:00', n: 'Wychowanie fizyczne', g: 'JW2', r: 'SWFiS', start: '2026-02-24', end: '2026-03-31' },
@@ -267,7 +278,7 @@
         { d: 'Wtorek', t: '17:00-20:00', n: 'Psychologia komunikacji', g: '4', r: 'KP 213', start: '2026-05-05', end: '2026-06-02' },
         { d: 'Wtorek', t: '11:00-12:30', n: 'Emisja głosu', g: '3', r: 'Chłapowskiego A', start: '2026-04-14', end: '2026-05-12' },
         { d: 'Wtorek', t: '12:30-14:00', n: 'Emisja głosu', g: '4', r: 'Chłapowskiego A', start: '2026-04-14', end: '2026-05-12' },
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S2', r: 'KN', start: '2026-05-19', end: '2026-05-26' },
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S2', r: 'CDiLND DK7', start: '2026-05-19', end: '2026-05-26' },
         { d: 'Wtorek', t: '11:30-13:00', n: 'Podstawy biochemii', g: 'S2', r: 'ZŻCzIM 202', start: '2026-03-03', end: '2026-03-31' },
         { d: 'Wtorek', t: '08:00-10:15', n: 'Pedagogika', g: 'S2', r: 'Chłapowskiego A', start: '2026-03-10', end: '2026-04-28' },
         { d: 'Wtorek', t: '10:00-13:45', n: 'Język migowy (W)', g: 'W', r: 'online', start: '2026-02-24', end: '2026-02-24' },
@@ -288,17 +299,20 @@
         { d: 'Środa', t: '11:15-13:30', n: 'Pedagogika zabawy', g: '1', r: 'Chłapowskiego 2', start: '2026-05-06', end: '2026-05-13' },
         { d: 'Środa', t: '14:30-17:30', n: 'Pierwsza pomoc', g: 'A', r: 'CSM', start: '2026-04-01', end: '2026-04-29' },
         { d: 'Środa', t: '17:45-20:45', n: 'Pierwsza pomoc', g: 'B', r: 'CSM', start: '2026-04-01', end: '2026-04-29' },
-        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S1', r: 'KN', start: '2026-05-20', end: '2026-05-27' },
-        { d: 'Środa', t: '18:15-19:45', n: 'Psychologia komunikacji', g: 'S1', r: 'WNZ 210', start: '2026-02-25', end: '2026-03-25' },
-        { d: 'Środa', t: '09:45-11:15', n: 'Socjologia medycyny', g: '3', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, // brak 13.05
-        { d: 'Środa', t: '13:15-14:45', n: 'Socjologia medycyny', g: '4', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, // brak 13.05
+        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S1', r: 'CDiLND DK7', start: '2026-05-20', end: '2026-05-27' },
+        { d: 'Środa', t: '18:15-19:45', n: 'Psychologia komunikacji', g: 'S1', r: 'WNZ 210', start: '2026-04-08', end: '2026-05-06' },
+        { d: 'Środa', t: '08:00-10:15', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-04-01', end: '2026-04-01' },
+        { d: 'Środa', t: '08:00-09:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-04-08', end: '2026-04-08' },
+        { d: 'Środa', t: '09:45-11:15', n: 'Socjologia medycyny', g: '3', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, 
+        { d: 'Środa', t: '13:15-14:45', n: 'Socjologia medycyny', g: '4', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, 
         { d: 'Środa', t: '13:30-15:00', n: 'Emisja głosu', g: '3', r: 'Chłapowskiego 2', start: '2026-05-20', end: '2026-06-17' },
         { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'g', r: 'KN', start: '2026-05-13', end: '2026-05-13' },
         { d: 'Środa', t: '12:00-15:45', n: 'Podstawy neurologii', g: 'g', r: 'KN', start: '2026-05-13', end: '2026-05-13' },
-        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S2', r: 'KN', start: '2026-03-25', end: '2026-04-01' },
-        { d: 'Środa', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S2', r: 'Rektorat 307', start: '2026-04-08', end: '2026-06-17' }, // brak 13.05, inne sale w czerwcu
-        { d: 'Środa', t: '12:45-14:15', n: 'Psychologia komunikacji', g: 'S2', r: 'KP 211', start: '2026-02-25', end: '2026-03-25' },
-        { d: 'Środa', t: '18:15-20:30', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-03-11' },
+        { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'S2', r: 'CNTM 20', start: '2026-03-25', end: '2026-04-01' },
+        { d: 'Środa', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S2', r: 'Rektorat 307', start: '2026-04-08', end: '2026-06-17' },
+        { d: 'Środa', t: '12:45-14:15', n: 'Psychologia komunikacji', g: 'S2', r: 'KP 211', start: '2026-04-08', end: '2026-04-22' },
+        { d: 'Środa', t: '11:00-12:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'ZŻCzIM 202', start: '2026-03-11', end: '2026-03-11' },
+        { d: 'Środa', t: '18:15-20:30', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-03-11', end: '2026-03-11' },
         { d: 'Środa', t: '18:15-19:00', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-03-18', end: '2026-03-18' },
         { d: 'Środa', t: '09:45-12:00', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-02-25' },
         { d: 'Środa', t: '09:45-11:15', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-03-03', end: '2026-03-03' },
@@ -364,6 +378,8 @@
 
     function getSubjectClass(name) {
         const n = name.toLowerCase();
+        if(n.includes('praktyki')) return 's-praktyki';
+        if(n.includes('relaksacj')) return 's-relaks';
         if(n.includes('pedagogika')) return 's-pedagogika';
         if(n.includes('pomoc')) return 's-pomoc';
         if(n.includes('socjologia')) return 's-socjo';
@@ -448,7 +464,6 @@
         
         const studentClasses = schedule.filter(item => checkGroup(currentStudent, item.g));
         
-        // Dodajemy daty konkretnych zajęć (rozbijamy zakresy na pojedyncze dni, z pominięciem świąt)
         let allEvents = [];
 
         studentClasses.forEach(item => {
@@ -458,7 +473,6 @@
             while (curr <= end) {
                 const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
                 
-                // Sprawdź dzień tygodnia I CZY NIE MA ŚWIĘTA
                 if(curr.getDay() === dayMap[item.d] && !isHoliday(curr)) {
                     // Wyjątki
                     const dateStr = `${curr.getDate()}.${curr.getMonth()+1}`;
