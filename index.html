@@ -29,87 +29,124 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: var(--color-bg-primary); color: var(--color-text-primary); padding: 20px; line-height: 1.5; }
+        body { font-family: -apple-system, sans-serif; background: var(--color-bg-primary); color: var(--color-text-primary); padding: 15px; line-height: 1.5; }
         .container { max-width: 1000px; margin: 0 auto; }
         
         header { background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); text-align: center; }
-        h1 { color: var(--color-primary); margin-bottom: 5px; }
+        h1 { color: var(--color-primary); margin-bottom: 5px; font-size: 1.5em;}
 
-        .search-section { background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; margin-bottom: 20px; position: relative; }
+        /* Baner informacyjny */
+        .info-banner {
+            background: rgba(37, 99, 235, 0.05);
+            border: 1px solid var(--color-primary);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+        .info-banner strong.title {
+            color: var(--color-primary);
+            font-size: 1.05em;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .info-banner ul { margin-top: 5px; margin-left: 20px; color: var(--color-text-primary); }
+        .info-banner li { margin-bottom: 3px; }
+
+        .search-section { background: var(--color-bg-secondary); padding: 15px; border-radius: 12px; margin-bottom: 20px; position: relative; }
         input { width: 100%; padding: 12px; border: 2px solid var(--color-border); border-radius: 8px; font-size: 16px; background: var(--color-bg-primary); color: var(--color-text-primary); }
         
-        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--color-bg-secondary); border: 1px solid var(--color-border); z-index: 100; max-height: 300px; overflow-y: auto; display: none; }
+        .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--color-bg-secondary); border: 1px solid var(--color-border); z-index: 100; max-height: 300px; overflow-y: auto; display: none; border-radius:0 0 8px 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);}
         .suggestions.active { display: block; }
         .suggestion-item { padding: 12px; border-bottom: 1px solid var(--color-border); cursor: pointer; }
         .suggestion-item:hover { background: var(--color-border); }
 
-        .view-controls { display: flex; gap: 10px; margin-bottom: 20px; display: none; }
-        .view-btn { flex: 1; padding: 10px; border: 1px solid var(--color-border); background: var(--color-bg-secondary); color: var(--color-text-primary); border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .view-controls { display: flex; gap: 8px; margin-bottom: 20px; display: none; flex-wrap: wrap; }
+        .view-btn { flex: 1; min-width: 100px; padding: 10px; border: 1px solid var(--color-border); background: var(--color-bg-secondary); color: var(--color-text-primary); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9em; }
         .view-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
 
-        .schedule-container { display: none; background: var(--color-bg-secondary); padding: 20px; border-radius: 12px; }
+        .schedule-container { display: none; background: var(--color-bg-secondary); padding: 15px; border-radius: 12px; }
         .schedule-container.active { display: block; }
 
         /* Lista zajęć */
-        .class-item { padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #ccc; background: var(--color-bg-primary); }
+        .class-item { padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #ccc; background: var(--color-bg-primary); position: relative; overflow: hidden; }
         .class-header { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; }
         .class-details { font-size: 0.9em; color: var(--color-text-secondary); }
 
-        /* Kalendarz */
+        /* Kalendarz miesięczny */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .calendar-day { background: var(--color-bg-primary); border: 1px solid var(--color-border); min-height: 80px; padding: 5px; border-radius: 6px; position: relative; font-size: 0.8em; }
         .calendar-day.today { border-color: var(--color-primary); border-width: 2px; }
         .calendar-day.holiday { background: var(--color-holiday); color: var(--color-holiday-text); border-color: transparent; }
-        .calendar-header { text-align: center; font-weight: bold; padding: 5px; }
+        .calendar-header { text-align: center; font-weight: bold; padding: 5px; font-size:0.9em; }
         .dot-container { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 5px; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
         .holiday-label { font-size: 0.8em; font-weight: bold; margin-top: 2px; display: block; line-height: 1.1; }
 
-        /* Kolory przedmiotów */
-        .s-pedagogika { border-color: #f59e0b; background-color: #f59e0b; }
-        .s-pomoc { border-color: #ef4444; background-color: #ef4444; }
-        .s-socjo { border-color: #8b5cf6; background-color: #8b5cf6; }
-        .s-neuro { border-color: #10b981; background-color: #10b981; }
-        .s-psych { border-color: #ec4899; background-color: #ec4899; }
-        .s-wf { border-color: #3b82f6; background-color: #3b82f6; }
-        .s-jezyk { border-color: #06b6d4; background-color: #06b6d4; }
-        .s-bio { border-color: #eab308; background-color: #eab308; }
-        .s-kreatywne { border-color: #6366f1; background-color: #6366f1; }
-        .s-migowy { border-color: #14b8a6; background-color: #14b8a6; }
-        .s-kognitywistyka { border-color: #f97316; background-color: #f97316; }
-        .s-emisja { border-color: #d946ef; background-color: #d946ef; }
-        .s-praktyki { border-color: #dc2626; background-color: #dc2626; } /* Czerwony - Dobre praktyki */
-        .s-relaks { border-color: #f97316; background-color: #f97316; } /* Pomarańcz - Relaksacja */
+        /* ====== NOWY WIDOK TYGODNIOWY ====== */
+        .week-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap:10px;}
+        .week-nav button { padding: 8px 15px; border-radius: 8px; border: 1px solid var(--color-border); background: var(--color-bg-primary); color: var(--color-text-primary); cursor: pointer; font-weight:bold; }
+        .week-nav button:hover { background: var(--color-border); }
+        
+        .weekly-scroll-container { overflow-x: auto; border: 1px solid var(--color-border); border-radius: 8px; background: var(--color-bg-primary); padding-bottom: 10px; }
+        
+        .weekly-grid { 
+            display: grid; 
+            grid-template-columns: 50px repeat(5, minmax(160px, 1fr)); 
+            min-width: 850px; 
+        }
+        
+        .weekly-head-cell { text-align: center; padding: 10px 5px; border-bottom: 1px solid var(--color-border); border-right: 1px solid var(--color-border); font-weight: bold; background: var(--color-bg-secondary); position: sticky; top: 0; z-index: 10; }
+        .weekly-head-cell span { font-weight: normal; font-size: 0.8em; color: var(--color-text-secondary); }
+        
+        .weekly-time-col { border-right: 1px solid var(--color-border); background: var(--color-bg-secondary); }
+        .weekly-day-col { border-right: 1px solid var(--color-border); position: relative; background: var(--color-bg-primary); }
+        
+        .w-time-slot { height: 60px; /* 1 godzina = 60px */ border-bottom: 1px dashed var(--color-border); box-sizing: border-box; position: relative; }
+        .w-time-label { position: absolute; top: -10px; right: 5px; font-size: 0.75em; color: var(--color-text-secondary); background: var(--color-bg-secondary); padding: 0 3px; }
+        
+        .w-event { 
+            position: absolute; left: 4px; right: 4px; border-radius: 6px; padding: 6px; font-size: 0.8em; overflow: hidden; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); color: var(--color-text-primary); border-left: 4px solid; 
+            display: flex; flex-direction: column; z-index: 5;
+        }
+        .w-event-time { font-weight: bold; font-size: 0.9em; margin-bottom: 2px; }
+        .w-event-title { font-weight: 600; line-height: 1.2; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom:2px;}
+        .w-event-room { font-size: 0.85em; opacity: 0.8; }
 
-        .dot.s-pedagogika { background: #f59e0b; }
-        .dot.s-pomoc { background: #ef4444; }
-        .dot.s-socjo { background: #8b5cf6; }
-        .dot.s-neuro { background: #10b981; }
-        .dot.s-psych { background: #ec4899; }
-        .dot.s-wf { background: #3b82f6; }
-        .dot.s-jezyk { background: #06b6d4; }
-        .dot.s-bio { background: #eab308; }
-        .dot.s-kreatywne { background: #6366f1; }
-        .dot.s-migowy { background: #14b8a6; }
-        .dot.s-kognitywistyka { background: #f97316; }
-        .dot.s-emisja { background: #d946ef; }
-        .dot.s-praktyki { background: #dc2626; }
-        .dot.s-relaks { background: #f97316; }
-
-        .class-item.s-pedagogika { background: rgba(245, 158, 11, 0.1); }
-        .class-item.s-pomoc { background: rgba(239, 68, 68, 0.1); }
-        .class-item.s-socjo { background: rgba(139, 92, 246, 0.1); }
-        .class-item.s-neuro { background: rgba(16, 185, 129, 0.1); }
-        .class-item.s-psych { background: rgba(236, 72, 153, 0.1); }
-        .class-item.s-wf { background: rgba(59, 130, 246, 0.1); }
-        .class-item.s-jezyk { background: rgba(6, 182, 212, 0.1); }
-        .class-item.s-bio { background: rgba(234, 179, 8, 0.1); }
-        .class-item.s-kreatywne { background: rgba(99, 102, 241, 0.1); }
-        .class-item.s-migowy { background: rgba(20, 184, 166, 0.1); }
-        .class-item.s-kognitywistyka { background: rgba(249, 115, 22, 0.1); }
-        .class-item.s-emisja { background: rgba(217, 70, 239, 0.1); }
-        .class-item.s-praktyki { background: rgba(220, 38, 38, 0.1); }
-        .class-item.s-relaks { background: rgba(249, 115, 22, 0.1); }
+        /* ====== WSPÓLNE KOLORY PRZEDMIOTÓW (Dla listy i tygodnia) ====== */
+        .c-pedagogika { border-left-color: #f59e0b; background-color: rgba(245, 158, 11, 0.15); }
+        .c-pomoc { border-left-color: #ef4444; background-color: rgba(239, 68, 68, 0.15); }
+        .c-socjo { border-left-color: #8b5cf6; background-color: rgba(139, 92, 246, 0.15); }
+        .c-neuro { border-left-color: #10b981; background-color: rgba(16, 185, 129, 0.15); }
+        .c-psych { border-left-color: #ec4899; background-color: rgba(236, 72, 153, 0.15); }
+        .c-wf { border-left-color: #3b82f6; background-color: rgba(59, 130, 246, 0.15); }
+        .c-jezyk { border-left-color: #06b6d4; background-color: rgba(6, 182, 212, 0.15); }
+        .c-bio { border-left-color: #eab308; background-color: rgba(234, 179, 8, 0.15); }
+        .c-kreatywne { border-left-color: #6366f1; background-color: rgba(99, 102, 241, 0.15); }
+        .c-migowy { border-left-color: #14b8a6; background-color: rgba(20, 184, 166, 0.15); }
+        .c-kognitywistyka { border-left-color: #f97316; background-color: rgba(249, 115, 22, 0.15); }
+        .c-emisja { border-left-color: #d946ef; background-color: rgba(217, 70, 239, 0.15); }
+        .c-praktyki { border-left-color: #dc2626; background-color: rgba(220, 38, 38, 0.15); }
+        .c-relaks { border-left-color: #f97316; background-color: rgba(249, 115, 22, 0.15); }
+        
+        /* Kolory kropek (dla miesiąca) */
+        .dot.c-pedagogika { background: #f59e0b; }
+        .dot.c-pomoc { background: #ef4444; }
+        .dot.c-socjo { background: #8b5cf6; }
+        .dot.c-neuro { background: #10b981; }
+        .dot.c-psych { background: #ec4899; }
+        .dot.c-wf { background: #3b82f6; }
+        .dot.c-jezyk { background: #06b6d4; }
+        .dot.c-bio { background: #eab308; }
+        .dot.c-kreatywne { background: #6366f1; }
+        .dot.c-migowy { background: #14b8a6; }
+        .dot.c-kognitywistyka { background: #f97316; }
+        .dot.c-emisja { background: #d946ef; }
+        .dot.c-praktyki { background: #dc2626; }
+        .dot.c-relaks { background: #f97316; }
     </style>
 </head>
 <body>
@@ -117,22 +154,50 @@
 <div class="container">
     <header>
         <h1>📅 Plan Zajęć - Psychologia Zdrowia</h1>
-        <p>Semestr letni 2026</p>
+        <p>Semestr letni 2025/2026</p>
     </header>
+
+    <div class="info-banner">
+        <strong class="title">ℹ️ Ważne informacje i terminy zaliczeń/egzaminów:</strong>
+        <ul>
+            <li><strong>Biologiczne podstawy zachowania (Egzamin):</strong> 6 marca, godz. 19:00</li>
+            <li><strong>Filozofia:</strong> 9 marca (?)</li>
+            <li><strong>Biologia rozwoju (Zaliczenie):</strong> 13 marca, godz. 8:00</li>
+            <li><strong>Socjologia medycyny (Egzamin - gr. S1):</strong> 18 maja, godz. 11:30</li>
+            <li><strong>Socjologia medycyny (Egzamin - gr. S2):</strong> 20 maja, godz. 11:30</li>
+        </ul>
+    </div>
 
     <div class="search-section">
         <input type="text" id="searchInput" placeholder="🔍 Wpisz swoje nazwisko..." autocomplete="off">
         <div class="suggestions" id="suggestions"></div>
-        <div id="studentInfo" style="margin-top:15px; font-weight:bold; color:var(--color-primary);"></div>
+        <div id="studentInfo" style="margin-top:15px; font-weight:bold; color:var(--color-primary); text-align:center;"></div>
     </div>
 
     <div class="view-controls" id="viewControls">
-        <button class="view-btn active" onclick="switchView('list')">📋 Lista zajęć</button>
-        <button class="view-btn" onclick="switchView('calendar')">📆 Kalendarz</button>
+        <button class="view-btn active" onclick="switchView('list')">📋 Lista</button>
+        <button class="view-btn" onclick="switchView('weekly')">📊 Tydzień</button>
+        <button class="view-btn" onclick="switchView('calendar')">📆 Miesiąc</button>
     </div>
 
     <div id="listView" class="schedule-container active">
-        <p style="text-align:center; color:#888;">Wybierz studenta, aby zobaczyć plan.</p>
+        <p style="text-align:center; color:var(--color-text-secondary);">Wybierz studenta, aby zobaczyć plan.</p>
+    </div>
+
+    <div id="weeklyView" class="schedule-container">
+        <div class="week-nav">
+            <button onclick="changeWeek(-1)">◀ Poprzedni</button>
+            <span id="weekLabel" style="font-weight:bold; font-size:1.1em; text-align:center; flex-grow:1;"></span>
+            <button onclick="changeWeek(1)">Następny ▶</button>
+        </div>
+        <div style="text-align:center; margin-bottom:15px;">
+            <button onclick="jumpToStart()" style="padding:6px 12px; border-radius:6px; background:var(--color-primary); color:white; border:none; cursor:pointer; font-size:0.85em;">Skok do początku semestru (23.02)</button>
+        </div>
+        
+        <div class="weekly-scroll-container">
+            <div class="weekly-grid" id="weeklyGrid">
+                </div>
+        </div>
     </div>
 
     <div id="calendarView" class="schedule-container">
@@ -186,7 +251,7 @@
         { name: "Sójka Jaśmina", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
         { name: "Majewski Maciej", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
         { name: "Kowalska Zofia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "d", duzy: "C" } },
-        { name: "Kubiak Alicja", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
+        { name: "Kubiak Alicja", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Lange Natalia", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Madej Kinga", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
         { name: "Malicka Elżbieta", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
@@ -209,9 +274,9 @@
         { name: "Sernik Julia", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
         { name: "Woźniak Aleksandra", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
         { name: "Skubisz Natalia", groups: { S: "S2", JW: "JW3", cw: "3", maly: "g", duzy: "E" } },
-        { name: "Smacki Alex", groups: { S: "S2", JW: "JW2", cw: "3", maly: "f", duzy: "D" } },
+        { name: "Smacki Alex", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
         { name: "Sochanowska Dominika", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
-        { name: "Raźniewski Antoni", groups: { S: "S1", JW: "JW2", cw: "2", maly: "e", duzy: "C" } },
+        { name: "Raźniewski Antoni", groups: { S: "S2", JW: "JW3", cw: "3", maly: "h", duzy: "E" } },
         { name: "Tomczyk Sabina", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
         { name: "Trojanowska Wiktoria", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
         { name: "Urbańska Matylda", groups: { S: "S2", JW: "JW3", cw: "4", maly: "h", duzy: "E" } },
@@ -241,7 +306,7 @@
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'd', r: 'KN', start: '2026-05-04', end: '2026-05-04' },
         { d: 'Poniedziałek', t: '15:00-16:30', n: 'Kliniczny zarys chorób', g: 'S1', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
         { d: 'Poniedziałek', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S1', r: 'Rektorat 215', start: '2026-03-30', end: '2026-06-08' },
-        { d: 'Poniedziałek', t: '08:30-10:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'WNZ 215?', start: '2026-03-23', end: '2026-03-30' },
+        { d: 'Poniedziałek', t: '08:30-10:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'do ustalenia', start: '2026-03-23', end: '2026-03-30' },
         { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', start: '2026-02-23', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '3', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '4', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
@@ -260,6 +325,8 @@
         { d: 'Poniedziałek', t: '11:15-13:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'KP', start: '2026-04-27', end: '2026-05-04' },
 
         // ----- WTOREK -----
+        { d: 'Wtorek', t: '08:00-11:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S1', r: 'MCD2 015', start: '2026-06-16', end: '2026-06-23' }, 
+        { d: 'Wtorek', t: '12:00-15:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S2', r: 'MCD2 015', start: '2026-06-09', end: '2026-06-23' },
         { d: 'Wtorek', t: '15:30-17:00', n: 'Wychowanie fizyczne', g: 'JW1', r: 'SWFiS', start: '2026-04-21', end: '2026-06-23' },
         { d: 'Wtorek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '1', r: 'KN', start: '2026-06-02', end: '2026-06-09' },
         { d: 'Wtorek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '2', r: 'KN', start: '2026-06-02', end: '2026-06-09' },
@@ -281,16 +348,14 @@
         { d: 'Wtorek', t: '10:00-13:45', n: 'Język migowy (W)', g: 'W', r: 'online', start: '2026-02-24', end: '2026-02-24' },
         { d: 'Wtorek', t: '14:00-17:00', n: 'Prawo własności intelektualnej (W)', g: 'W', r: 'online', start: '2026-02-24', end: '2026-02-24' },
         { d: 'Wtorek', t: '16:00-17:30', n: 'Socjologia medycyny (W)', g: 'W', r: 'online', start: '2026-03-03', end: '2026-03-31' },
-        { d: 'Wtorek', t: '08:00-11:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S1', r: 'MCD2 015', start: '2026-06-16', end: '2026-06-23' }, 
-        { d: 'Wtorek', t: '12:00-15:45', n: 'Elementy relaksacji i pracy z ciałem', g: 'S2', r: 'MCD2 015', start: '2026-06-09', end: '2026-06-23' }, 
 
         // ----- ŚRODA -----
         { d: 'Środa', t: '15:00-17:15', n: 'Język obcy', g: 'JW2', r: 'SPNJO', start: '2026-03-11', end: '2026-05-13' },
         { d: 'Środa', t: '15:00-18:00', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', start: '2026-05-20', end: '2026-05-20' },
         { d: 'Środa', t: '13:45-16:45', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', start: '2026-05-27', end: '2026-06-17' },
         { d: 'Środa', t: '10:30-13:30', n: 'Psychologia komunikacji', g: '2', r: 'KP 213', start: '2026-06-03', end: '2026-06-24' },
-        { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-02-25' }, // WYJĄTEK JEDNORAZOWY
-        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-03-04', end: '2026-04-29' }, // STANDARDOWA GODZINA
+        { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-02-25' }, 
+        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-03-04', end: '2026-04-29' }, 
         { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '2', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-04-29' },
         { d: 'Środa', t: '08:00-10:15', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-01', end: '2026-04-15' },
         { d: 'Środa', t: '08:00-08:45', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-22', end: '2026-04-22' },
@@ -312,10 +377,10 @@
         { d: 'Środa', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S2', r: 'Rektorat 307', start: '2026-04-08', end: '2026-06-17' },
         { d: 'Środa', t: '12:45-14:15', n: 'Psychologia komunikacji', g: 'S2', r: 'KP 211', start: '2026-02-25', end: '2026-03-25' },
         { d: 'Środa', t: '11:00-12:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S2', r: 'ZŻCzIM 202', start: '2026-03-11', end: '2026-03-11' },
-        { d: 'Środa', t: '18:15-20:30', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-03-11' },
+        { d: 'Środa', t: '18:15-20:30', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-03-11' }, 
         { d: 'Środa', t: '18:15-19:00', n: 'Podstawy neurologii (W)', g: 'W', r: 'online', start: '2026-03-18', end: '2026-03-18' },
         { d: 'Środa', t: '09:45-12:00', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-02-25', end: '2026-02-25' },
-        { d: 'Środa', t: '09:45-11:15', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-03-03', end: '2026-03-03' },
+        { d: 'Środa', t: '09:45-11:15', n: 'Pedagogika zabawy (W)', g: 'W', r: 'online', start: '2026-03-04', end: '2026-03-04' },
 
         // ----- CZWARTEK -----
         { d: 'Czwartek', t: '11:00-12:30', n: 'Socjologia medycyny', g: '2', r: 'MCD 2 205', start: '2026-04-02', end: '2026-05-07' },
@@ -368,30 +433,36 @@
     // ================= LOGIKA APLIKACJI =================
     
     let currentStudent = null;
+    let currentWeekStart = new Date(2026, 1, 23); // Domyślnie skacze na 23 lutego 2026 (Poniedziałek)
+
     const searchInput = document.getElementById('searchInput');
     const suggestions = document.getElementById('suggestions');
     const studentInfo = document.getElementById('studentInfo');
+    
     const listView = document.getElementById('listView');
+    const weeklyView = document.getElementById('weeklyView');
     const calendarView = document.getElementById('calendarView');
+    
     const calendarContent = document.getElementById('calendarContent');
+    const weeklyGrid = document.getElementById('weeklyGrid');
     const viewControls = document.getElementById('viewControls');
 
     function getSubjectClass(name) {
         const n = name.toLowerCase();
-        if(n.includes('praktyki')) return 's-praktyki';
-        if(n.includes('relaksacj')) return 's-relaks';
-        if(n.includes('pedagogika')) return 's-pedagogika';
-        if(n.includes('pomoc')) return 's-pomoc';
-        if(n.includes('socjologia')) return 's-socjo';
-        if(n.includes('neurolog')) return 's-neuro';
-        if(n.includes('psychologia')) return 's-psych';
-        if(n.includes('wychowanie')) return 's-wf';
-        if(n.includes('język') && !n.includes('migowy')) return 's-jezyk';
-        if(n.includes('biochem')) return 's-bio';
-        if(n.includes('kreatywne')) return 's-kreatywne';
-        if(n.includes('migowy')) return 's-migowy';
-        if(n.includes('kognitywistyka')) return 's-kognitywistyka';
-        if(n.includes('emisja')) return 's-emisja';
+        if(n.includes('praktyki')) return 'c-praktyki';
+        if(n.includes('relaksacj')) return 'c-relaks';
+        if(n.includes('pedagogika')) return 'c-pedagogika';
+        if(n.includes('pomoc')) return 'c-pomoc';
+        if(n.includes('socjologia')) return 'c-socjo';
+        if(n.includes('neurolog')) return 'c-neuro';
+        if(n.includes('psychologia')) return 'c-psych';
+        if(n.includes('wychowanie')) return 'c-wf';
+        if(n.includes('język') && !n.includes('migowy')) return 'c-jezyk';
+        if(n.includes('biochem')) return 'c-bio';
+        if(n.includes('kreatywne')) return 'c-kreatywne';
+        if(n.includes('migowy')) return 'c-migowy';
+        if(n.includes('kognitywistyka')) return 'c-kognitywistyka';
+        if(n.includes('emisja')) return 'c-emisja';
         return '';
     }
 
@@ -410,6 +481,40 @@
         const g = student.groups;
         return (classGroup === g.S || classGroup === g.JW || classGroup === g.cw || 
                 classGroup === g.maly || classGroup === g.duzy);
+    }
+
+    function getStudentEvents(student) {
+        if(!student) return [];
+        const studentClasses = schedule.filter(item => checkGroup(student, item.g));
+        let allEvents = [];
+
+        studentClasses.forEach(item => {
+            let curr = parseDate(item.start);
+            let end = parseDate(item.end);
+            
+            while (curr <= end) {
+                const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
+                
+                if(curr.getDay() === dayMap[item.d] && !isHoliday(curr)) {
+                    const dateStr = `${curr.getDate()}.${curr.getMonth()+1}`;
+                    if(item.n === 'Wychowanie fizyczne' && item.d === 'Poniedziałek' && dateStr === '18.5') {
+                        // skip
+                    } else if(item.n.includes('Socjologia') && dateStr === '13.5') {
+                        // skip
+                    } else {
+                        allEvents.push({ date: new Date(curr), ...item });
+                    }
+                }
+                curr.setDate(curr.getDate() + 1);
+            }
+        });
+
+        allEvents.sort((a, b) => {
+            if(a.date.getTime() !== b.date.getTime()) return a.date.getTime() - b.date.getTime();
+            return a.t.localeCompare(b.t);
+        });
+        
+        return allEvents;
     }
 
     // Wyszukiwarka
@@ -439,9 +544,10 @@
         suggestions.classList.remove('active');
         viewControls.style.display = 'flex';
         
-        studentInfo.innerText = `${student.name} (Sem: ${student.groups.S}, Język: ${student.groups.JW}, Ćw: ${student.groups.cw}, Lab: ${student.groups.maly}/${student.groups.duzy})`;
+        studentInfo.innerHTML = `👤 ${student.name} <br><span style="font-size:0.85em; font-weight:normal;">Sem: ${student.groups.S} | Język: ${student.groups.JW} | Ćw: ${student.groups.cw} | Lab: ${student.groups.maly}/${student.groups.duzy}</span>`;
         
         renderList();
+        renderWeekly();
         renderCalendar();
     }
 
@@ -452,49 +558,22 @@
         if(viewName === 'list') {
             listView.classList.add('active');
             document.querySelector("button[onclick=\"switchView('list')\"]").classList.add('active');
+        } else if(viewName === 'weekly') {
+            weeklyView.classList.add('active');
+            document.querySelector("button[onclick=\"switchView('weekly')\"]").classList.add('active');
+            renderWeekly(); // Odśwież żeby na pewno siatka się ułożyła
         } else {
             calendarView.classList.add('active');
             document.querySelector("button[onclick=\"switchView('calendar')\"]").classList.add('active');
         }
     }
 
+    // ================= WIDOK 1: LISTA =================
     function renderList() {
         if(!currentStudent) return;
         listView.innerHTML = '';
         
-        const studentClasses = schedule.filter(item => checkGroup(currentStudent, item.g));
-        
-        let allEvents = [];
-
-        studentClasses.forEach(item => {
-            let curr = parseDate(item.start);
-            let end = parseDate(item.end);
-            
-            while (curr <= end) {
-                const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
-                
-                if(curr.getDay() === dayMap[item.d] && !isHoliday(curr)) {
-                    // Wyjątki
-                    const dateStr = `${curr.getDate()}.${curr.getMonth()+1}`;
-                    if(item.n === 'Wychowanie fizyczne' && item.d === 'Poniedziałek' && dateStr === '18.5') {
-                        // skip
-                    } else if(item.n.includes('Socjologia') && dateStr === '13.5') {
-                        // skip
-                    } else {
-                        allEvents.push({
-                            date: new Date(curr),
-                            ...item
-                        });
-                    }
-                }
-                curr.setDate(curr.getDate() + 1);
-            }
-        });
-
-        allEvents.sort((a, b) => {
-            if(a.date.getTime() !== b.date.getTime()) return a.date.getTime() - b.date.getTime();
-            return a.t.localeCompare(b.t);
-        });
+        const allEvents = getStudentEvents(currentStudent);
 
         if(allEvents.length === 0) {
             listView.innerHTML = '<p style="text-align:center">Brak zajęć.</p>';
@@ -534,6 +613,98 @@
         });
     }
 
+    // ================= WIDOK 2: TYDZIEŃ =================
+    function changeWeek(offset) {
+        currentWeekStart.setDate(currentWeekStart.getDate() + (offset * 7));
+        renderWeekly();
+    }
+    
+    function jumpToStart() {
+        currentWeekStart = new Date(2026, 1, 23); // 23 Lutego 2026
+        renderWeekly();
+    }
+
+    function renderWeekly() {
+        if(!currentStudent) return;
+        
+        const weekEnd = new Date(currentWeekStart);
+        weekEnd.setDate(weekEnd.getDate() + 4); // Od Pon do Pt (4 dni dodane)
+        
+        const monthNamesStr = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+        
+        document.getElementById('weekLabel').innerText = 
+            `${currentWeekStart.getDate()}.${monthNamesStr[currentWeekStart.getMonth()]} - ${weekEnd.getDate()}.${monthNamesStr[weekEnd.getMonth()]}`;
+            
+        weeklyGrid.innerHTML = '';
+        
+        // 1. Nagłówki dni
+        let html = `<div class="weekly-head-cell" style="border-left:none;"></div>`; // lewy górny róg
+        const dayNamesShort = ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek'];
+        
+        for(let i=0; i<5; i++) {
+            let d = new Date(currentWeekStart);
+            d.setDate(d.getDate() + i);
+            html += `<div class="weekly-head-cell">${dayNamesShort[i]}<br><span>${d.getDate()}.${monthNamesStr[d.getMonth()]}</span></div>`;
+        }
+        
+        // 2. Kolumna z godzinami (8:00 - 21:00)
+        html += `<div class="weekly-time-col">`;
+        for(let h=8; h<=21; h++) {
+            html += `<div class="w-time-slot"><span class="w-time-label">${h}:00</span></div>`;
+        }
+        html += `</div>`;
+        
+        // 3. Kolumny z dniami i zajęciami
+        const allEvents = getStudentEvents(currentStudent);
+        
+        for(let i=0; i<5; i++) {
+            let currentDay = new Date(currentWeekStart);
+            currentDay.setDate(currentDay.getDate() + i);
+            
+            html += `<div class="weekly-day-col">`;
+            
+            // Siatka w tle (kreski)
+            for(let h=8; h<=21; h++) {
+                html += `<div class="w-time-slot"></div>`;
+            }
+
+            // Kafelki na ten dzień
+            const dayEvents = allEvents.filter(e => e.date.getTime() === currentDay.getTime());
+            
+            dayEvents.forEach(e => {
+                // Konwersja czasu na piksele (1 godzina = 60px)
+                const times = e.t.split('-');
+                const startParts = times[0].split(':');
+                const endParts = times[1].split(':');
+                
+                const startH = parseInt(startParts[0]);
+                const startM = parseInt(startParts[1]);
+                const endH = parseInt(endParts[0]);
+                const endM = parseInt(endParts[1]);
+                
+                // Offset od godziny 8:00
+                const topPx = ((startH - 8) * 60) + startM;
+                const durationMins = ((endH * 60) + endM) - ((startH * 60) + startM);
+                const heightPx = durationMins;
+                
+                const colorClass = getSubjectClass(e.n);
+                
+                html += `
+                    <div class="w-event ${colorClass}" style="top: ${topPx}px; height: ${heightPx}px;">
+                        <div class="w-event-time">${e.t}</div>
+                        <div class="w-event-title" title="${e.n}">${e.n}</div>
+                        <div class="w-event-room">📍 ${e.r}</div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+        }
+        
+        weeklyGrid.innerHTML = html;
+    }
+
+    // ================= WIDOK 3: MIESIĄC =================
     function renderCalendar() {
         if(!currentStudent) return;
         calendarContent.innerHTML = '';
@@ -566,6 +737,8 @@
                 grid.appendChild(document.createElement('div'));
             }
 
+            const allEvents = getStudentEvents(currentStudent);
+
             for(let d=1; d<=lastDay.getDate(); d++) {
                 const currentDayDate = new Date(year, monthIdx, d);
                 const dayDiv = document.createElement('div');
@@ -578,23 +751,7 @@
                 } else {
                     dayDiv.innerHTML = `<div>${d}</div>`;
                     
-                    const dayClasses = schedule.filter(c => {
-                        if(!checkGroup(currentStudent, c.g)) return false;
-                        
-                        const sDate = parseDate(c.start);
-                        const eDate = parseDate(c.end);
-                        
-                        if (currentDayDate >= sDate && currentDayDate <= eDate) {
-                            const dayMap = { 'Poniedziałek': 1, 'Wtorek': 2, 'Środa': 3, 'Czwartek': 4, 'Piątek': 5 };
-                            if(currentDayDate.getDay() === dayMap[c.d]) {
-                                const dateStr = `${currentDayDate.getDate()}.${currentDayDate.getMonth()+1}`;
-                                if(c.n === 'Wychowanie fizyczne' && c.d === 'Poniedziałek' && dateStr === '18.5') return false;
-                                if(c.n.includes('Socjologia') && dateStr === '13.5') return false;
-                                return true;
-                            }
-                        }
-                        return false;
-                    });
+                    const dayClasses = allEvents.filter(e => e.date.getTime() === currentDayDate.getTime());
 
                     if(dayClasses.length > 0) {
                         const dots = document.createElement('div');
@@ -608,9 +765,8 @@
                         dayDiv.appendChild(dots);
                         
                         dayDiv.onclick = () => {
-                            let info = `Plan na ${d}.${monthIdx+1}:\n`;
-                            dayClasses.sort((a,b)=>a.t.localeCompare(b.t));
-                            dayClasses.forEach(x => info += `${x.t} ${x.n} (${x.r})\n`);
+                            let info = `Plan na ${d}.${monthIdx+1}:\n\n`;
+                            dayClasses.forEach(x => info += `🕒 ${x.t} \n📚 ${x.n} \n📍 ${x.r}\n\n`);
                             alert(info);
                         };
                         dayDiv.style.cursor = 'pointer';
