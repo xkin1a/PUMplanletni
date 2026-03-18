@@ -308,7 +308,7 @@
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurologii', g: 'd', r: 'KN', start: '2026-05-04', end: '2026-05-04' },
         { d: 'Poniedziałek', t: '15:00-16:30', n: 'Kliniczny zarys chorób', g: 'S1', r: 'Rektorat 215', start: '2026-03-09', end: '2026-04-13' },
         { d: 'Poniedziałek', t: '11:30-13:00', n: 'Socjologia medycyny', g: 'S1', r: 'Rektorat 215', start: '2026-03-30', end: '2026-06-08' },
-        { d: 'Poniedziałek', t: '08:30-10:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'do ustalenia', start: '2026-03-23', end: '2026-03-30' },
+        { d: 'Poniedziałek', t: '08:30-10:45', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'do ustalenia', start: '2026-03-25', end: '2026-03-25' },
         { d: 'Poniedziałek', t: '14:00-15:30', n: 'Wychowanie fizyczne', g: 'JW3', r: 'SWFiS', start: '2026-02-23', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '12:00-15:45', n: 'Podstawy neurokognitywistyki', g: '3', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
         { d: 'Poniedziałek', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: '4', r: 'KN', start: '2026-06-01', end: '2026-06-08' },
@@ -359,7 +359,8 @@
         { d: 'Środa', t: '13:45-16:45', n: 'Psychologia komunikacji', g: '1', r: 'KP 213', start: '2026-05-27', end: '2026-06-17' },
         { d: 'Środa', t: '10:30-13:30', n: 'Psychologia komunikacji', g: '2', r: 'KP 213', start: '2026-06-03', end: '2026-06-24' },
         { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-02-25' }, 
-        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-03-04', end: '2026-04-29' }, 
+        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-03-04', end: '2026-03-18' }, 
+        { d: 'Środa', t: '11:00-12:30', n: 'Emisja głosu', g: '1', r: 'Chłapowskiego B', start: '2026-04-01', end: '2026-04-29' }, 
         { d: 'Środa', t: '13:00-14:30', n: 'Emisja głosu', g: '2', r: 'Chłapowskiego B', start: '2026-02-25', end: '2026-04-29' },
         { d: 'Środa', t: '08:00-10:15', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-01', end: '2026-04-15' },
         { d: 'Środa', t: '08:00-08:45', n: 'Pedagogika', g: '1', r: 'Chłapowskiego', start: '2026-04-22', end: '2026-04-22' },
@@ -370,6 +371,8 @@
         { d: 'Środa', t: '17:45-20:45', n: 'Pierwsza pomoc', g: 'B', r: 'CSM', start: '2026-04-01', end: '2026-04-29' },
         { d: 'Środa', t: '08:00-11:45', n: 'Podstawy neurokognitywistyki', g: 'S1', r: 'CDiLND DK7', start: '2026-05-20', end: '2026-05-27' },
         { d: 'Środa', t: '18:15-19:45', n: 'Psychologia komunikacji', g: 'S1', r: 'WNZ 210', start: '2026-04-08', end: '2026-05-06' },
+        { d: 'Środa', t: '08:00-10:15', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-05-06', end: '2026-05-13' },
+        { d: 'Środa', t: '12:30-14:00', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-05-20', end: '2026-05-20' },
         { d: 'Środa', t: '08:00-10:15', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-03-11', end: '2026-04-01' },
         { d: 'Środa', t: '08:00-09:30', n: 'Dobre praktyki w psychologii i psychoterapii', g: 'S1', r: 'ZŻCzIM 202', start: '2026-04-08', end: '2026-04-08' },
         { d: 'Środa', t: '09:45-11:15', n: 'Socjologia medycyny', g: '3', r: 'Rektorat 307A', start: '2026-04-15', end: '2026-05-20' }, 
@@ -436,7 +439,18 @@
     // ================= LOGIKA APLIKACJI =================
     
     let currentStudent = null;
-    let currentWeekStart = new Date(2026, 1, 23); // Domyślnie skacze na 23 lutego 2026 (Poniedziałek)
+    let currentWeekStart = new Date(); // Zaczynamy od pobrania "Dzisiaj"
+    
+    // Funkcja cofająca "Dzisiaj" do najbliższego Poniedziałku
+    function setToMonday(d) {
+        d = new Date(d);
+        var day = d.getDay(),
+            diff = d.getDate() - day + (day == 0 ? -6: 1); // dostosuj gdy niedziela
+        return new Date(d.setDate(diff));
+    }
+    
+    currentWeekStart = setToMonday(currentWeekStart); 
+    currentWeekStart.setHours(0,0,0,0); // Zerujemy godziny dla równego rachunku
 
     const searchInput = document.getElementById('searchInput');
     const suggestions = document.getElementById('suggestions');
