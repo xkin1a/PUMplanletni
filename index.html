@@ -517,7 +517,7 @@
     }
 
     function checkGroup(student, classGroup) {
-        if(student.isStarosta) return true; // <-- MAGICZNA ZMIANA DLA STAROSTY
+        if(student.isStarosta) return true; 
         if(classGroup === 'W') return true;
         const g = student.groups;
         return (classGroup === g.S || classGroup === g.JW || classGroup === g.cw || 
@@ -538,9 +538,9 @@
                 
                 if(curr.getDay() === dayMap[item.d] && !isHoliday(curr)) {
                     const dateStr = `${curr.getDate()}.${curr.getMonth()+1}`;
-                    if(item.n === 'Wychowanie fizyczne' && item.d === 'Poniedziałek' && dateStr === '18.5') {
-                        // skip
-                    } else if(item.n.includes('Socjologia') && dateStr === '13.5') {
+                    
+                    // USUNIĘTO WARUNEK "18.5" DLA WYCHOWANIA FIZYCZNEGO
+                    if(item.n.includes('Socjologia') && dateStr === '13.5') {
                         // skip
                     } else {
                         allEvents.push({ date: new Date(curr), ...item });
